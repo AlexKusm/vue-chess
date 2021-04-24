@@ -28,10 +28,10 @@ export default {
 }
 
 .tile {
-  background: mintcream;
+  background: sandybrown;
 }
 
 .tile.color {
-  background: darkslategray;
+  background: saddlebrown;
 }
 </style>

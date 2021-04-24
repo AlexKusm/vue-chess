@@ -9,6 +9,9 @@ export default {
   name: 'App',
   components: {
     Board
+  },
+  created() {
+    this.$store.dispatch('newGame');
   }
 }
 </script>

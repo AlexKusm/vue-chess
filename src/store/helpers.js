@@ -37,215 +37,220 @@ export default function translateRanks(rank) {
     }
 }
 
-let whiteRook = {
+let Rook = {
     name: 'Rook',
-    icon: '♖',
     notation: 'R'
 }
 
-let whiteKnight = {
+let Knight = {
     name: 'Knight',
-    icon: '♘',
     notation: 'N'
 }
 
-let whiteBishop = {
+let Bishop = {
     name: 'Bishop',
-    icon: '♗',
     notation: 'B'
 }
 
-let whiteKing = {
+let King = {
     name: 'King',
-    icon: '♔',
     notation: 'K'
 }
 
-let whiteQueen = {
+let Queen = {
     name: 'Queen',
-    icon: '♕',
     notation: 'Q'
 }
 
-let whitePawn = {
+let Pawn = {
     name: 'Pawn',
-    icon: '♙',
-    notation: ''
-}
-
-let blackRook = {
-    name: 'Rook',
-    icon: '♜',
-    notation: 'R'
-}
-
-let blackKnight = {
-    name: 'Knight',
-    icon: '♞',
-    notation: 'N'
-}
-
-let blackBishop = {
-    name: 'Bishop',
-    icon: '♝',
-    notation: 'B'
-}
-
-let blackKing = {
-    name: 'King',
-    icon: '♚',
-    notation: 'K'
-}
-
-let blackQueen = {
-    name: 'Queen',
-    icon: '♛',
-    notation: 'Q'
-}
-
-let blackPawn = {
-    name: 'Pawn',
-    icon: '♟',
     notation: ''
 }
 
 export let startingPositions = [
     {
-        id: 8,
-        type: whitePawn,
-        position: [translateRanks('a'), 2]
-    }, {
-        id: 8,
-        type: whitePawn,
-        position: [translateRanks('b'), 2]
-    }, {
-        id: 8,
-        type: whitePawn,
-        position: [translateRanks('c'), 2]
-    }, {
-        id: 8,
-        type: whitePawn,
-        position: [translateRanks('d'), 2]
-    }, {
-        id: 8,
-        type: whitePawn,
-        position: [translateRanks('e'), 2]
-    }, {
-        id: 8,
-        type: whitePawn,
-        position: [translateRanks('f'), 2]
-    }, {
-        id: 8,
-        type: whitePawn,
-        position: [translateRanks('g'), 2]
-    }, {
-        id: 8,
-        type: whitePawn,
-        position: [translateRanks('h'), 2]
-    }, {
         id: 1,
-        type: whiteRook,
-        position: [translateRanks('a'), 1]
+        type: Rook,
+        position: [translateRanks('a'), 1],
+        player: 'white'
     }, {
         id: 2,
-        type: whiteKnight,
-        position: [translateRanks('b'), 1]
+        type: Knight,
+        position: [translateRanks('b'), 1],
+        player: 'white'
     }, {
         id: 3,
-        type: whiteBishop,
+        type: Bishop,
         position: [translateRanks('c'), 1]
+        ,
+        player: 'white'
     }, {
         id: 4,
-        type: whiteKing,
+        type: King,
         position: [translateRanks('d'), 1]
+        ,
+        player: 'white'
     }, {
         id: 5,
-        type: whiteQueen,
+        type: Queen,
         position: [translateRanks('e'), 1]
+        ,
+        player: 'white'
     }, {
         id: 6,
-        type: whiteBishop,
+        type: Bishop,
         position: [translateRanks('f'), 1]
+        ,
+        player: 'white'
     }, {
         id: 7,
-        type: whiteKnight,
+        type: Knight,
         position: [translateRanks('g'), 1]
+        ,
+        player: 'white'
     }, {
         id: 8,
-        type: whiteRook,
+        type: Rook,
         position: [translateRanks('h'), 1]
+        ,
+        player: 'white'
     },
     {
-        id: 8,
-        type: blackPawn,
-        position: [translateRanks('a'), 7]
+        id: 9,
+        type: Pawn,
+        position: [translateRanks('a'), 2]
+        ,
+        player: 'white'
     }, {
-        id: 8,
-        type: blackPawn,
-        position: [translateRanks('b'), 7]
+        id: 10,
+        type: Pawn,
+        position: [translateRanks('b'), 2]
+        ,
+        player: 'white'
     }, {
-        id: 8,
-        type: blackPawn,
-        position: [translateRanks('c'), 7]
+        id: 11,
+        type: Pawn,
+        position: [translateRanks('c'), 2]
+        ,
+        player: 'white'
     }, {
-        id: 8,
-        type: blackPawn,
-        position: [translateRanks('d'), 7]
+        id: 12,
+        type: Pawn,
+        position: [translateRanks('d'), 2]
+        ,
+        player: 'white'
     }, {
-        id: 8,
-        type: blackPawn,
-        position: [translateRanks('e'), 7]
+        id: 13,
+        type: Pawn,
+        position: [translateRanks('e'), 2]
+        ,
+        player: 'white'
     }, {
-        id: 8,
-        type: blackPawn,
-        position: [translateRanks('f'), 7]
+        id: 14,
+        type: Pawn,
+        position: [translateRanks('f'), 2]
+        ,
+        player: 'white'
     }, {
-        id: 8,
-        type: blackPawn,
-        position: [translateRanks('g'), 7]
+        id: 15,
+        type: Pawn,
+        position: [translateRanks('g'), 2]
+        ,
+        player: 'white'
     }, {
-        id: 8,
-        type: blackPawn,
-        position: [translateRanks('h'), 7]
+        id: 16,
+        type: Pawn,
+        position: [translateRanks('h'), 2]
+        ,
+        player: 'white'
+    },
+    {
+        id: 25,
+        type: Pawn,
+        position: [translateRanks('a'), 7],
+        player: 'black'
     }, {
-        id: 1,
-        type: blackRook,
-        position: [translateRanks('a'), 8]
+        id: 26,
+        type: Pawn,
+        position: [translateRanks('b'), 7],
+        player: 'black'
     }, {
-        id: 2,
-        type: blackKnight,
-        position: [translateRanks('b'), 8]
+        id: 27,
+        type: Pawn,
+        position: [translateRanks('c'), 7],
+        player: 'black'
     }, {
-        id: 3,
-        type: blackBishop,
-        position: [translateRanks('c'), 8]
+        id: 28,
+        type: Pawn,
+        position: [translateRanks('d'), 7],
+        player: 'black'
     }, {
-        id: 4,
-        type: blackKing,
-        position: [translateRanks('d'), 8]
+        id: 29,
+        type: Pawn,
+        position: [translateRanks('e'), 7],
+        player: 'black'
     }, {
-        id: 5,
-        type: blackQueen,
-        position: [translateRanks('e'), 8]
+        id: 30,
+        type: Pawn,
+        position: [translateRanks('f'), 7],
+        player: 'black'
     }, {
-        id: 6,
-        type: blackBishop,
-        position: [translateRanks('f'), 8]
+        id: 31,
+        type: Pawn,
+        position: [translateRanks('g'), 7],
+        player: 'black'
     }, {
-        id: 7,
-        type: blackKnight,
-        position: [translateRanks('g'), 8]
+        id: 32,
+        type: Pawn,
+        position: [translateRanks('h'), 7],
+        player: 'black'
     }, {
-        id: 8,
-        type: blackRook,
-        position: [translateRanks('h'), 8]
+        id: 17,
+        type: Rook,
+        position: [translateRanks('a'), 8],
+        player: 'black'
+    }, {
+        id: 18,
+        type: Knight,
+        position: [translateRanks('b'), 8],
+        player: 'black'
+    }, {
+        id: 19,
+        type: Bishop,
+        position: [translateRanks('c'), 8],
+        player: 'black'
+    }, {
+        id: 20,
+        type: King,
+        position: [translateRanks('d'), 8],
+        player: 'black'
+    }, {
+        id: 21,
+        type: Queen,
+        position: [translateRanks('e'), 8],
+        player: 'black'
+    }, {
+        id: 22,
+        type: Bishop,
+        position: [translateRanks('f'), 8],
+        player: 'black'
+    }, {
+        id: 23,
+        type: Knight,
+        position: [translateRanks('g'), 8],
+        player: 'black'
+    }, {
+        id: 24,
+        type: Rook,
+        position: [translateRanks('h'), 8],
+        player: 'black'
     }]
 
 export function createTiles() {
     let tiles = [];
     let color = false;
     let tile;
-    let id=1;
+    let id = 1;
 
     for (var y = 8; y >= 1; y--) {
         let file = [];
@@ -256,6 +261,7 @@ export function createTiles() {
             tile.color = color;
             tile.rank = x;
             tile.file = y;
+            tile.possibleMove = false;
 
             file.push(tile);
 

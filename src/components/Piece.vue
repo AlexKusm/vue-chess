@@ -1,18 +1,31 @@
 <template>
-  <div class="piece"
-       :class="['rank-' + piece.position[0], 'file-' + piece.position[1]]">
-    {{ piece.type.icon }}
+  <div class="piece" :class="['rank-' + piece.position[0], 'file-' + piece.position[1]]"
+       @click="startTurn()">
+    <img :src="iconPath" width="40" height="40">
   </div>
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 
 export default {
   name: "Piece",
-  props: ['piece', 'tiles'],
+  props: ['piece'],
+  methods: {
+    startTurn() {
+      if (this.piece.player !== this.turn) {
+        return;
+      }
+
+      this.$store.dispatch('startTurn', this.piece)
+    }
+  },
   computed: {
-    position() {
-      return this.piece.rank;
+    ...mapGetters([
+      'turn'
+    ]),
+    iconPath: function () {
+      return require('../assets/pieces/default/' + this.piece.player + this.piece.type.name + '.svg');
     }
   }
 }

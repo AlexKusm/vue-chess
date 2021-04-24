@@ -3,6 +3,7 @@ import {createTiles, startingPositions} from "@/store/helpers";
 
 export default createStore({
     state: {
+        turn: 'white',
         moves: [],
         beatenPieces: [],
         pieces: [],
@@ -15,17 +16,8 @@ export default createStore({
         PIECES_ON_START(state, payload) {
             state.pieces = payload;
         },
-        MOVE_PAWN() {
-        },
-        MOVE_ROOK() {
-        },
-        MOVE_KNIGHT() {
-        },
-        MOVE_BISHOP() {
-        },
-        MOVE_QUEEN() {
-        },
-        MOVE_KING() {
+        HIGHLIGHT_POSSIBLE_MOVES(state, payload) {
+            state.tiles = payload;
         },
     },
     actions: {
@@ -33,8 +25,13 @@ export default createStore({
             commit('CREATE_BOARD', createTiles());
             commit('PIECES_ON_START', startingPositions);
         },
+        startTurn({commit}, piece) {
+            console.log(piece)
+            commit('HIGHLIGHT_POSSIBLE_MOVES', this.state.tiles)
+        }
     },
     getters: {
+        turn: state => state.turn,
         moves: state => state.moves,
         beatenPieces: state => state.beatenPieces,
         pieces: state => state.pieces,
