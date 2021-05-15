@@ -325,3 +325,7 @@ export function createTiles() {
 
     return tiles;
 }
+
+export function isTileOutsideBoard(y, x){
+    return !(y > 7 || x > 7 || y < 0 || x < 0);
+}

@@ -28,8 +28,13 @@ export default {
         return;
       }
 
-      if (this.piece.type.name === 'Pawn') {
-        this.pawnMoves();
+      switch (this.piece.type.name) {
+        case 'Pawn':
+          this.pawnMoves();
+          break;
+        case 'Knight':
+          this.knightMoves();
+          break;
       }
     },
     beat() {
@@ -38,6 +43,9 @@ export default {
     },
     pawnMoves() {
       this.$store.dispatch('pawnMoves', this.piece);
+    },
+    knightMoves() {
+      this.$store.dispatch('knightMoves', this.piece);
     }
   },
   computed: {

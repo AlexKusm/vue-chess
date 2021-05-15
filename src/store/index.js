@@ -1,6 +1,6 @@
 //TODO Refactor selected piece in state instead looping for it?
 import {createStore} from 'vuex'
-import {createTiles, startingPositions} from "@/store/helpers";
+import {createTiles, startingPositions, isTileOutsideBoard} from "@/store/helpers";
 
 export default createStore({
     state: {
@@ -18,12 +18,28 @@ export default createStore({
         },
         CREATE_PIECES(state, pieces) {
             state.pieces = pieces;
+
+            pieces.forEach(p => {
+                let x = p.position[0];
+                let y = p.position[1];
+                state.tiles[y][x].current = p;
+            })
         },
         ADD_MOVE(state, moves) {
             state.moves = moves
         },
-        ADD_TILE_HIGHLIGHTS(state, tiles) {
-            state.tiles = tiles;
+        ADD_POSSIBLE_MOVE(state, tilePos) {
+            let x = tilePos[0]
+            let y = tilePos[1]
+
+            state.tiles[y][x].possibleMove = true;
+        },
+        ADD_POSSIBLE_BEAT(state, tilePos) {
+            let x = tilePos[0]
+            let y = tilePos[1]
+
+            state.tiles[x][y].possibleBeat = true;
+            state.tiles[x][y].current.possibleBeat = true;
         },
         REMOVE_TILE_HIGHLIGHTS(state) {
             state.tiles.forEach((rank) => {
@@ -41,6 +57,12 @@ export default createStore({
         },
         MOVE_PIECE(state, tile) {
             let selectedPiece = state.pieces.find(p => p.selected);
+
+            let x = selectedPiece.position[0];
+            let y = selectedPiece.position[1];
+            state.tiles[y][x].current = false;
+            state.tiles[tile.file][tile.rank].current = selectedPiece;
+
             selectedPiece.position[0] = tile.rank
             selectedPiece.position[1] = tile.file
             selectedPiece.moved = true;
@@ -113,7 +135,7 @@ export default createStore({
             /**
              * Check for Beatable Pieces
              */
-            let enemyPieces = this.state.pieces.filter(p => p.player != piece.player && p.moved)
+            let enemyPieces = this.state.pieces.filter(p => p.player !== piece.player && p.moved)
             enemyPieces.forEach(enemyPiece => {
                 let beatCondition1 = enemyPiece.position[1] === piece.position[1] - 1;
                 let beatCondition2 = enemyPiece.position[0] === piece.position[0] + 1;
@@ -129,6 +151,65 @@ export default createStore({
                     enemyPiece.possibleBeat = true;
                 }
             });
+        },
+        knightMoves({commit}, piece) {
+            commit('REMOVE_TILE_HIGHLIGHTS');
+            commit('DESELECT_PIECE');
+            commit('SELECT_PIECE', piece);
+
+            let y = piece.position[0];
+            let x = piece.position[1];
+
+            /**
+             * All Possible Knight Jumps
+             */
+            let knightJumps = [
+                [y + 2, x + 1],
+                [y + 2, x - 1],
+                [y - 2, x + 1],
+                [y - 2, x - 1],
+                [y + 1, x + 2],
+                [y + 1, x - 2],
+                [y - 1, x + 2],
+                [y - 1, x - 2],
+            ];
+
+            /**
+             * Check for Bounds
+             */
+            knightJumps = knightJumps.filter(pos => isTileOutsideBoard(pos[0], pos[1]));
+
+            /**
+             * Check for Own Pieces
+             */
+            knightJumps = knightJumps.filter(pos => {
+                const x = pos[0];
+                const y = pos[1];
+
+                if (this.state.tiles[y][x].current) {
+                    return this.state.tiles[y][x].current.player !== piece.player;
+                } else return true;
+
+            })
+
+            /**
+             * Mark Moves
+             */
+
+            console.log(knightJumps);
+            knightJumps.forEach(pos => {
+                commit('ADD_POSSIBLE_MOVE', pos);
+
+                const x = pos[0];
+                const y = pos[1];
+                console.log(x, y)
+
+                if (this.state.tiles[x][y].current) {
+                    commit('ADD_POSSIBLE_BEAT', pos);
+                }
+            })
+
+
         },
         commitMove({commit}, tile) {
             commit('MOVE_PIECE', tile);
