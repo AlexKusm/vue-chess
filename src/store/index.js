@@ -1,3 +1,4 @@
+//TODO Refactor selected piece in state instead looping for it?
 import {createStore} from 'vuex'
 import {createTiles, startingPositions} from "@/store/helpers";
 
@@ -6,6 +7,7 @@ export default createStore({
         gameID: 1,
         turn: 'white',
         moves: [],
+        selectedPiece: {},
         beatenPieces: [],
         pieces: [],
         tiles: []
@@ -20,31 +22,43 @@ export default createStore({
         ADD_MOVE(state, moves) {
             state.moves = moves
         },
-        ADD_MOVE_HIGHLIGHT(state, tiles) {
+        ADD_TILE_HIGHLIGHTS(state, tiles) {
             state.tiles = tiles;
         },
-        REMOVE_MOVE_HIGHLIGHT(state) {
+        REMOVE_TILE_HIGHLIGHTS(state) {
             state.tiles.forEach((rank) => {
                 rank.forEach(tile => tile.possibleMove = false)
             })
-
-            this.state.pieces.forEach((piece) => {
+        },
+        SELECT_PIECE(state, piece) {
+            state.pieces.find(p => p.id === piece.id).selected = true;
+        },
+        DESELECT_PIECE(state) {
+            console.log('deselecting all pieces')
+            state.pieces.forEach((piece) => {
                 piece.selected = false;
             })
         },
-        MOVE(state, targetTile) {
+        MOVE_PIECE(state, tile) {
             let selectedPiece = state.pieces.find(p => p.selected);
-            selectedPiece.position[0] = targetTile.rank
-            selectedPiece.position[1] = targetTile.file //todo: file coordinates are kind of messy
+            selectedPiece.position[0] = tile.rank
+            selectedPiece.position[1] = tile.file
             selectedPiece.moved = true;
 
-            const notation = selectedPiece.type.notation + targetTile.notation;
+            const notation = selectedPiece.type.notation + tile.notation;
 
             state.moves.push({
                 id: state.moves.length + 1,
                 player: state.turn,
                 notation: notation
             });
+        },
+        BEAT_PIECE(state, piece) {
+            const index = this.state.pieces.findIndex(p => p.id === piece.id)
+            console.log(index);
+            state.pieces.splice(index, 1);
+            piece.beaten = true;
+            state.beatenPieces.push(piece);
         },
         SWITCH_TURN(state) {
             if (state.turn === "white") {
@@ -59,57 +73,70 @@ export default createStore({
             commit('CREATE_BOARD', createTiles());
             commit('CREATE_PIECES', startingPositions);
         },
-        startTurn({commit}) {
-            commit('ADD_MOVE_HIGHLIGHT', this.state.tiles)
+        removeTileHighlight({commit}) {
+            commit('REMOVE_TILE_HIGHLIGHTS');
         },
-        removeMoveHighlight({commit}) {
-            commit('REMOVE_MOVE_HIGHLIGHT');
+        selectPiece({commit}, piece) {
+            commit('SELECT_PIECE', piece);
         },
-        showPawnMoves({commit}, piece) {
-            commit('REMOVE_MOVE_HIGHLIGHT');
-            piece.selected = true;
+        deselectPieces({commit}) {
+            commit('DESELECT_PIECE');
+        },
+        pawnMoves({commit}, piece) {
+            commit('REMOVE_TILE_HIGHLIGHTS');
+            commit('DESELECT_PIECE');
+            commit('SELECT_PIECE', piece);
 
             let x = piece.position[0];
-            let y = 7 - piece.position[1];
+            let y = piece.position[1];
 
-            // move forward
-            if (piece.player == 'white') {
+            /**
+             * Base Move, One Forward
+             */
+            if (piece.player === 'white') {
                 this.state.tiles[y - 1][x].possibleMove = true;
             } else {
                 this.state.tiles[y + 1][x].possibleMove = true;
             }
 
             /**
-             * Check for Beatable Pieces
+             * Possible Two Field Move
              */
-            let enemyPieces = this.state.pieces.filter(p => p.player != piece.player && p.moved)
-            enemyPieces.forEach(p => {
-                let beatCondition1 = p.position[1] === piece.position[1] + 1;
-                const beatCondition2 = p.position[0] === piece.position[0] + 1;
-                const beatCondition3 = p.position[0] === piece.position[0] - 1;
-
-                if (piece.player === 'black') {
-                    beatCondition1 = p.position[1] === piece.position[1] - 1;
-                }
-
-                if (beatCondition1 && (beatCondition2 || beatCondition3)) {
-                 console.log('BEAT');
-                }
-            });
-
-            // first move for pawn is two fields
             if (!piece.moved) {
-                if (piece.player == 'white') {
+                if (piece.player === 'white') {
                     this.state.tiles[y - 2][x].possibleMove = true;
                 } else {
                     this.state.tiles[y + 2][x].possibleMove = true;
                 }
             }
+
+            /**
+             * Check for Beatable Pieces
+             */
+            let enemyPieces = this.state.pieces.filter(p => p.player != piece.player && p.moved)
+            enemyPieces.forEach(enemyPiece => {
+                let beatCondition1 = enemyPiece.position[1] === piece.position[1] - 1;
+                let beatCondition2 = enemyPiece.position[0] === piece.position[0] + 1;
+                let beatCondition3 = enemyPiece.position[0] === piece.position[0] - 1;
+
+                if (piece.player === 'black') {
+                    beatCondition1 = enemyPiece.position[1] === piece.position[1] + 1;
+                }
+
+                if (beatCondition1 && (beatCondition2 || beatCondition3)) {
+                    this.state.tiles[enemyPiece.position[1]][enemyPiece.position[0]].possibleMove = true;
+                    this.state.tiles[enemyPiece.position[1]][enemyPiece.position[0]].possibleBeat = true;
+                    enemyPiece.possibleBeat = true;
+                }
+            });
         },
-        move({commit}, tile) {
-            commit('MOVE', tile);
+        commitMove({commit}, tile) {
+            commit('MOVE_PIECE', tile);
             commit('SWITCH_TURN');
-            commit('REMOVE_MOVE_HIGHLIGHT');
+            commit('REMOVE_TILE_HIGHLIGHTS');
+        },
+        beatPiece({commit}, piece) {
+            commit('BEAT_PIECE', piece)
         }
     },
     getters: {

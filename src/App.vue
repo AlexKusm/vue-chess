@@ -1,21 +1,30 @@
 <template>
-  <Board/>
+  <Game/>
 </template>
 
 <script>
-import Board from './components/Board.vue'
+import Game from './components/game/Game.vue'
 
 export default {
   name: 'App',
   components: {
-    Board
-  },
-  created() {
-    this.$store.dispatch('newGame');
+    Game
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+:root {
+  background: whitesmoke;
+}
 
+body {
+  padding: 0;
+  margin: 0;
+}
+
+#app {
+  background: radial-gradient(#ddd 0%, #abb 100%);
+  height: 100vh;
+}
 </style>

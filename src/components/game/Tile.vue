@@ -1,9 +1,9 @@
 <template>
   <div class="tile"
-       :class="[{'color':tile.color}, {'possibleMove':tile.possibleMove}]"
+       :class="[{'color':tile.color}, {'possibleMove':tile.possibleMove}, {'possibleBeat':tile.possibleBeat}]"
        :data-rank="[tile.rank]"
        :data-file="[tile.file]"
-       @click="tile.possibleMove ? move(tile) : null">
+       @click="tile.possibleMove ? commitMove(tile) : null">
     <span>{{ tile.notation }}</span>
   </div>
 </template>
@@ -18,14 +18,14 @@ export default {
     }
   },
   methods: {
-    move(tile) {
-      this.$store.dispatch('move', tile);
+    commitMove(tile) {
+      this.$store.dispatch('commitMove', tile);
     }
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .tile {
   height: 0;
   padding-bottom: 100%;
@@ -33,11 +33,11 @@ export default {
 }
 
 .tile {
-  background: sandybrown;
+  background: lighten(#997766, 15);
 }
 
 .tile.color {
-  background: saddlebrown;
+  background: #552211;
 }
 
 .tile.possibleMove::after {
@@ -54,5 +54,9 @@ export default {
   transform: translate(-50%, -50%);
   opacity: 0.2;
   width: 50%;
+}
+
+.tile.possibleBeat::after {
+  background: var(--highlightBeat);
 }
 </style>
