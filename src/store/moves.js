@@ -9,7 +9,7 @@ export function getDiagonals(y, x) {
     /**
      * All Possible Bishop Lanes
      */
-    for (let i = 1; i < 7; i++) {
+    for (let i = 1; i < 8; i++) {
         if (isTileOutsideBoard(y - i, x - i)) {
             break;
         }
@@ -28,7 +28,7 @@ export function getDiagonals(y, x) {
         diagonals.push([y - i, x - i])
     }
 
-    for (let i = 1; i < 7; i++) {
+    for (let i = 1; i < 8; i++) {
         if (isTileOutsideBoard(y + i, x + i)) {
             break;
         }
@@ -47,7 +47,7 @@ export function getDiagonals(y, x) {
         diagonals.push([y + i, x + i])
     }
 
-    for (let i = 1; i < 7; i++) {
+    for (let i = 1; i < 8; i++) {
         if (isTileOutsideBoard(y + i, x - i)) {
             break;
         }
@@ -66,7 +66,7 @@ export function getDiagonals(y, x) {
         diagonals.push([y + i, x - i])
     }
 
-    for (let i = 1; i < 7; i++) {
+    for (let i = 1; i < 8; i++) {
         if (isTileOutsideBoard(y - i, x + i)) {
             break;
         }
@@ -102,7 +102,7 @@ export function getStraights(y, x) {
     /**
      * All Possible Bishop Lanes
      */
-    for (let i = 1; i < 7; i++) {
+    for (let i = 1; i < 8; i++) {
         if (isTileOutsideBoard(y - i, x)) {
             break;
         }
@@ -121,7 +121,7 @@ export function getStraights(y, x) {
         straights.push([y - i, x])
     }
 
-    for (let i = 1; i < 7; i++) {
+    for (let i = 1; i < 8; i++) {
         if (isTileOutsideBoard(y + i, x)) {
             break;
         }
@@ -140,7 +140,7 @@ export function getStraights(y, x) {
         straights.push([y + i, x])
     }
 
-    for (let i = 1; i < 7; i++) {
+    for (let i = 1; i < 8; i++) {
         if (isTileOutsideBoard(y, x - i)) {
             break;
         }
@@ -159,7 +159,7 @@ export function getStraights(y, x) {
         straights.push([y, x - i])
     }
 
-    for (let i = 1; i < 7; i++) {
+    for (let i = 1; i < 8; i++) {
         if (isTileOutsideBoard(y, x + i)) {
             break;
         }

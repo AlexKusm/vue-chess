@@ -1,7 +1,7 @@
 //TODO Refactor selected piece in state instead looping for it?
 import {createStore} from 'vuex'
 import {createTiles, startingPositions, isTileOutsideBoard} from "@/store/helpers";
-import {getDiagonals} from "@/store/moves";
+import {getDiagonals, getStraights} from "@/store/moves";
 
 const store = createStore({
     state: {
@@ -137,6 +137,12 @@ const store = createStore({
                 case 'Bishop':
                     dispatch('bishopMove', piece.position);
                     break;
+                case 'Rook':
+                    dispatch('rookMove', piece.position);
+                    break;
+                case 'Queen':
+                    dispatch('queenMove', piece.position);
+                    break;
             }
         },
         pawnMove({commit}, pos) {
@@ -207,7 +213,6 @@ const store = createStore({
                 [y - 1, x - 2],
             ];
 
-
             /**
              * Check for Bounds
              */
@@ -236,6 +241,28 @@ const store = createStore({
             const bishopMoves = getDiagonals(y, x)
 
             bishopMoves.forEach(position => {
+                commit('MARK_POSSIBLE_MOVE', position);
+            })
+        },
+        rookMove({commit}, pos) {
+            let y = pos[0];
+            let x = pos[1];
+
+            const rookMoves = getStraights(y, x)
+
+            rookMoves.forEach(position => {
+                commit('MARK_POSSIBLE_MOVE', position);
+            })
+        },
+        queenMove({commit}, pos) {
+            let y = pos[0];
+            let x = pos[1];
+
+            const diagonals = getDiagonals(y, x)
+            const straights = getStraights(y, x)
+            const queenMoves = diagonals.concat(straights)
+
+            queenMoves.forEach(position => {
                 commit('MARK_POSSIBLE_MOVE', position);
             })
         },
