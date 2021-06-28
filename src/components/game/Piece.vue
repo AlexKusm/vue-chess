@@ -1,11 +1,11 @@
 <template>
   <div class="piece"
        :class="[
-           'rank-' + piece.position[0],
-            'file-' + piece.position[1],
+           'id-' + piece.id,
+           'rank-' + piece.position[1],
+            'file-' + piece.position[0],
             {'selected': piece.selected},
-            {'beaten': piece.beaten}]"
-       @click="piece.possibleBeat ? beat(piece) : startTurn(piece)">
+            {'beaten': piece.beaten}]">
     <img :src="iconPath" width="40" height="40" :alt="piece.type.name">
   </div>
 </template>
@@ -16,38 +16,6 @@ import {mapGetters} from 'vuex';
 export default {
   name: "Piece",
   props: ['piece'],
-  methods: {
-    startTurn() {
-      if (this.piece.player !== this.turn) {
-        return;
-      }
-
-      if (this.piece.selected) {
-        this.$store.dispatch('deselectPieces');
-        this.$store.dispatch('removeTileHighlight');
-        return;
-      }
-
-      switch (this.piece.type.name) {
-        case 'Pawn':
-          this.pawnMoves();
-          break;
-        case 'Knight':
-          this.knightMoves();
-          break;
-      }
-    },
-    beat() {
-      this.$store.dispatch('beatPiece', this.piece);
-      this.$store.dispatch('commitMove', this.tiles[this.piece.position[1]][this.piece.position[0]]);
-    },
-    pawnMoves() {
-      this.$store.dispatch('pawnMoves', this.piece);
-    },
-    knightMoves() {
-      this.$store.dispatch('knightMoves', this.piece);
-    }
-  },
   computed: {
     ...mapGetters([
       'turn',
@@ -56,10 +24,10 @@ export default {
     iconPath: function () {
       return require('../../assets/pieces/default/' + this.piece.player + this.piece.type.name + '.svg');
     },
-    x: function () {
+    y: function () {
       return this.piece.position[0];
     },
-    y: function () {
+    x: function () {
       return this.piece.position[1];
     }
   }
@@ -68,6 +36,7 @@ export default {
 
 <style scoped lang="scss">
 .piece {
+  pointer-events: none;
   z-index: 3;
 
   img {

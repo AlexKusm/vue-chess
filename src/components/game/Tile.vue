@@ -1,25 +1,47 @@
 <template>
   <div class="tile"
-       :class="[{'color':tile.color}, {'possibleMove':tile.possibleMove}, {'possibleBeat':tile.possibleBeat}]"
-       :data-rank="[tile.rank]"
-       :data-file="[tile.file]"
-       @click="tile.possibleMove ? commitMove(tile) : null">
+       :class="[{'color':tile.color}, {'possibleMove':tile.possibleMove}, {'current': tile.current}]"
+       :data-file="[tile.y]"
+       :data-rank="[tile.x]"
+       @click="tile.possibleMove ? commitMove(tile) : startTurn(tile.current)"
+  >
     <span>{{ tile.notation }}</span>
   </div>
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
   name: "Tile",
   props: ['tile'],
   computed: {
+    ...mapGetters([
+      'turn'
+    ]),
     possibleMove: function () {
       return this.tile.possibleMove
+    },
+    current: function () {
+      return this.tile.current
     }
   },
   methods: {
     commitMove(tile) {
       this.$store.dispatch('commitMove', tile);
+    },
+    startTurn(piece) {
+      if (!piece || piece.player !== this.turn) {
+        return;
+      }
+
+      if (piece.selected) {
+        this.$store.dispatch('deselectPieces');
+        this.$store.dispatch('removeTileHighlight');
+        return;
+      }
+
+      this.$store.dispatch('move', piece);
     }
   }
 }
@@ -40,6 +62,11 @@ export default {
   background: #552211;
 }
 
+.tile.possibleMove,
+.tile.current {
+  cursor: pointer;
+}
+
 .tile.possibleMove::after {
   background: var(--highlight);
   border: 2px solid white;
@@ -56,7 +83,7 @@ export default {
   width: 50%;
 }
 
-.tile.possibleBeat::after {
+.tile.possibleMove.current::after {
   background: var(--highlightBeat);
 }
 </style>

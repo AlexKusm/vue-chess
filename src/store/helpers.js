@@ -1,37 +1,41 @@
+/**
+ * @param rank
+ * @returns {string|number}
+ */
 export default function translateRanks(rank) {
     switch (rank) {
-        case 0:
-            return 'a'
-        case 1:
-            return 'b'
-        case 2:
-            return 'c'
-        case 3:
-            return 'd'
-        case 4:
-            return 'e'
-        case 5:
-            return 'f'
-        case 6:
-            return 'g'
         case 7:
+            return 'a'
+        case 6:
+            return 'b'
+        case 5:
+            return 'c'
+        case 4:
+            return 'd'
+        case 3:
+            return 'e'
+        case 2:
+            return 'f'
+        case 1:
+            return 'g'
+        case 0:
             return 'h'
         case 'a':
-            return 0
-        case 'b':
-            return 1
-        case 'c':
-            return 2
-        case 'd':
-            return 3
-        case 'e':
-            return 4
-        case 'f':
-            return 5
-        case 'g':
-            return 6
-        case 'h':
             return 7
+        case 'b':
+            return 6
+        case 'c':
+            return 5
+        case 'd':
+            return 4
+        case 'e':
+            return 3
+        case 'f':
+            return 2
+        case 'g':
+            return 1
+        case 'h':
+            return 0
         default:
             return '?'
     }
@@ -71,224 +75,224 @@ export let startingPositions = [
     {
         id: 1,
         type: Rook,
-        position: [translateRanks('a'), 7],
+        position: [7, translateRanks('a')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 2,
         type: Knight,
-        position: [translateRanks('b'), 7],
+        position: [7, translateRanks('b')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 3,
         type: Bishop,
-        position: [translateRanks('c'), 7],
+        position: [7, translateRanks('c')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 4,
         type: King,
-        position: [translateRanks('d'), 7],
+        position: [7, translateRanks('d')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 5,
         type: Queen,
-        position: [translateRanks('e'), 7],
+        position: [7, translateRanks('e')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 6,
         type: Bishop,
-        position: [translateRanks('f'), 7],
+        position: [7, translateRanks('f')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 7,
         type: Knight,
-        position: [translateRanks('g'), 7],
+        position: [7, translateRanks('g')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 8,
         type: Rook,
-        position: [translateRanks('h'), 7],
+        position: [7, translateRanks('h')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 9,
         type: Pawn,
-        position: [translateRanks('a'), 6],
+        position: [6, translateRanks('a')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 10,
         type: Pawn,
-        position: [translateRanks('b'), 6],
+        position: [6, translateRanks('b')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 11,
         type: Pawn,
-        position: [translateRanks('c'), 6],
+        position: [6, translateRanks('c')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 12,
         type: Pawn,
-        position: [translateRanks('d'), 6],
+        position: [6, translateRanks('d')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 13,
         type: Pawn,
-        position: [translateRanks('e'), 6],
+        position: [6, translateRanks('e')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 14,
         type: Pawn,
-        position: [translateRanks('f'), 6],
+        position: [6, translateRanks('f')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 15,
         type: Pawn,
-        position: [translateRanks('g'), 6],
+        position: [6, translateRanks('g')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 16,
         type: Pawn,
-        position: [translateRanks('h'), 6],
+        position: [6, translateRanks('h')],
         player: 'white',
         moved: false,
         selected: false
     }, {
         id: 25,
         type: Pawn,
-        position: [translateRanks('a'), 1],
+        position: [1, translateRanks('a')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 26,
         type: Pawn,
-        position: [translateRanks('b'), 1],
+        position: [1, translateRanks('b')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 27,
         type: Pawn,
-        position: [translateRanks('c'), 1],
+        position: [1, translateRanks('c')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 28,
         type: Pawn,
-        position: [translateRanks('d'), 1],
+        position: [1, translateRanks('d')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 29,
         type: Pawn,
-        position: [translateRanks('e'), 1],
+        position: [1, translateRanks('e')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 30,
         type: Pawn,
-        position: [translateRanks('f'), 1],
+        position: [1, translateRanks('f')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 31,
         type: Pawn,
-        position: [translateRanks('g'), 1],
+        position: [1, translateRanks('g')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 32,
         type: Pawn,
-        position: [translateRanks('h'), 1],
+        position: [1, translateRanks('h')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 17,
         type: Rook,
-        position: [translateRanks('a'), 0],
+        position: [0, translateRanks('a')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 18,
         type: Knight,
-        position: [translateRanks('b'), 0],
+        position: [0, translateRanks('b')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 19,
         type: Bishop,
-        position: [translateRanks('c'), 0],
+        position: [0, translateRanks('c')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 20,
         type: King,
-        position: [translateRanks('d'), 0],
+        position: [0, translateRanks('d')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 21,
         type: Queen,
-        position: [translateRanks('e'), 0],
+        position: [0, translateRanks('e')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 22,
         type: Bishop,
-        position: [translateRanks('f'), 0],
+        position: [0, translateRanks('f')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 23,
         type: Knight,
-        position: [translateRanks('g'), 0],
+        position: [0, translateRanks('g')],
         player: 'black',
         moved: false,
         selected: false
     }, {
         id: 24,
         type: Rook,
-        position: [translateRanks('h'), 0],
+        position: [0, translateRanks('h')],
         player: 'black',
         moved: false,
         selected: false
@@ -300,19 +304,21 @@ export function createTiles() {
     let tile;
     let id = 1;
 
-    for (var y = 0; y <= 7; y++) {
-        let file = [];
+    for (var x = 0; x <= 7; x++) {
+        let rank = [];
 
-        for (var x = 0; x <= 7; x++) {
+        for (var y = 0; y <= 7; y++) {
             tile = {};
             tile.id = id;
             tile.color = color;
-            tile.rank = x;
             tile.file = y;
-            tile.notation = translateRanks(tile.rank) + (8- tile.file)
+            tile.x = y;
+            tile.rank = x;
+            tile.y = x;
+            tile.notation = translateRanks(tile.rank) + (tile.file + 1)
             tile.possibleMove = false;
 
-            file.push(tile);
+            rank.push(tile);
 
             color = !color;
             id++;
@@ -320,12 +326,13 @@ export function createTiles() {
 
         color = !color;
 
-        tiles.push(file);
+        tiles.push(rank);
     }
 
+    console.log(tiles)
     return tiles;
 }
 
 export function isTileOutsideBoard(y, x){
-    return !(y > 7 || x > 7 || y < 0 || x < 0);
+    return (y > 7 || x > 7 || y < 0 || x < 0);
 }
