@@ -1,17 +1,17 @@
 //TODO Refactor selected piece in state instead looping for it?
 import {createStore} from 'vuex'
-import {createTiles, startingPositions, isTileOutsideBoard} from "@/store/helpers";
-import {getDiagonals, getStraights} from "@/store/moves";
+import {createTiles, startingPositions} from "@/store/helpers";
 
 const store = createStore({
     state: {
         gameID: 1,
         turn: 'white',
-        moves: [],
-        selectedPiece: {},
-        beatenPieces: [],
+        tiles: [],
         pieces: [],
-        tiles: []
+        moveHistory: [],
+        attackedTiles: [],
+        selectedPiece: {},
+        beatenPieces: []
     },
     mutations: {
         CREATE_BOARD(state, tiles) {
@@ -28,8 +28,8 @@ const store = createStore({
             })
         },
 
-        ADD_MOVE(state, moves) {
-            state.moves = moves
+        UPDATE_MOVE_HISTORY(state, moves) {
+            state.moveHistory = moves
         },
 
         MARK_POSSIBLE_MOVE(state, position) {
@@ -58,11 +58,35 @@ const store = createStore({
         SELECT_PIECE(state, piece) {
             state.selectedPiece = {}
             state.selectedPiece = state.pieces.find(p => p.id === piece.id);
+            state.selectedPiece.selected = true
         },
 
         DESELECT_PIECE(state) {
+            state.selectedPiece = {}
             state.pieces.forEach((piece) => {
                 piece.selected = false;
+            })
+        },
+
+        UPDATE_PIECE_MOVES(state, piece) {
+            let current = state.pieces.find(p => p.id === piece.id)
+
+            current.moves = piece.moves
+            current.attackedTiles = piece.attackedTiles
+        },
+
+        UPDATE_ATTACKED_TILES(state) {
+            state.attackedTiles = {
+                black: [],
+                white: []
+            }
+
+            state.pieces.forEach(p => {
+                if (p.attackedTiles && p.attackedTiles.length > 0) {
+                    p.attackedTiles.forEach(tile => {
+                        state.attackedTiles[p.player].push(tile)
+                    })
+                }
             })
         },
 
@@ -71,6 +95,9 @@ const store = createStore({
             let x = state.selectedPiece.position[1];
             state.tiles[y][x].current = null;
 
+            /**
+             * beat current piece if present
+             */
             if (tile.current) {
                 const index = state.pieces.findIndex(p => p.id === tile.current.id)
 
@@ -84,20 +111,13 @@ const store = createStore({
             state.selectedPiece.position[1] = tile.x
             state.selectedPiece.moved = true;
 
-            const notation = state.selectedPiece.type.notation + tile.notation;
+            // const notation = state.selectedPiece.type.notation + tile.notation;
 
-            state.moves.push({
-                id: state.moves.length + 1,
-                player: state.turn,
-                notation: notation
-            });
-        },
-
-        BEAT_PIECE(state, piece) {
-            const index = this.state.pieces.findIndex(p => p.id === piece.id)
-            state.pieces.splice(index, 1);
-            piece.beaten = true;
-            state.beatenPieces.push(piece);
+            // state.moveHistory.push({
+            //     id: state.moves.length + 1,
+            //     player: state.turn,
+            //     notation: notation
+            // });
         },
 
         SWITCH_TURN(state) {
@@ -106,6 +126,10 @@ const store = createStore({
             } else {
                 state.turn = 'white'
             }
+        },
+
+        CHECK_FOR_CHECK(state) {
+            console.log(state.pieces)
         }
     },
     actions: {
@@ -119,167 +143,34 @@ const store = createStore({
         selectPiece({commit}, piece) {
             commit('SELECT_PIECE', piece);
         },
+        updatePieceMoves({commit}, piece) {
+            commit('UPDATE_PIECE_MOVES', piece)
+            commit('UPDATE_ATTACKED_TILES')
+        },
+        markPossibleMoves({commit}, moves) {
+            moves.forEach(position => {
+                commit('MARK_POSSIBLE_MOVE', position);
+            })
+        },
         deselectPieces({commit}) {
             commit('DESELECT_PIECE');
-        },
-        move({commit, dispatch}, piece) {
             commit('REMOVE_TILE_HIGHLIGHTS');
-            commit('DESELECT_PIECE');
-            commit('SELECT_PIECE', piece);
-
-            switch (piece.type.name) {
-                case 'Pawn':
-                    dispatch('pawnMove', piece.position);
-                    break;
-                case 'Knight':
-                    dispatch('knightMove', piece.position);
-                    break;
-                case 'Bishop':
-                    dispatch('bishopMove', piece.position);
-                    break;
-                case 'Rook':
-                    dispatch('rookMove', piece.position);
-                    break;
-                case 'Queen':
-                    dispatch('queenMove', piece.position);
-                    break;
-            }
-        },
-        pawnMove({commit}, pos) {
-            let piece = this.state.selectedPiece;
-            let pawnMoves = []
-
-            let y = pos[0];
-            let x = pos[1];
-
-            /**
-             * Base Move, One Forward
-             */
-            if (piece.player === 'white') {
-                pawnMoves.push([y - 1, x]);
-
-            } else {
-                pawnMoves.push([y + 1, x]);
-            }
-
-            /**
-             * Possible Two Field Move
-             */
-            if (!piece.moved) {
-                if (piece.player === 'white') {
-                    pawnMoves.push([y - 2, x]);
-                } else {
-                    pawnMoves.push([y + 2, x]);
-                }
-            }
-            /**
-             * Check for Beatable Pieces
-             * TODO: This is not nice
-             */
-            let enemyPieces = this.state.pieces.filter(p => p.player !== piece.player && p.moved)
-            enemyPieces.forEach(enemyPiece => {
-                let beatCondition1 = enemyPiece.position[0] === piece.position[0] - 1;
-                let beatCondition2 = enemyPiece.position[1] === piece.position[1] + 1;
-                let beatCondition3 = enemyPiece.position[1] === piece.position[1] - 1;
-
-                if (piece.player === 'black') {
-                    beatCondition1 = enemyPiece.position[0] === piece.position[0] + 1;
-                }
-
-                if (beatCondition1 && (beatCondition2 || beatCondition3)) {
-                    this.state.tiles[enemyPiece.position[0]][enemyPiece.position[1]].possibleMove = true;
-                }
-            });
-
-            pawnMoves.forEach(position => {
-                commit('MARK_POSSIBLE_MOVE', position);
-            })
-        },
-        knightMove({commit}, pos) {
-            let y = pos[0];
-            let x = pos[1];
-
-            /**
-             * All Possible Knight Jumps
-             */
-            let knightMoves = [
-                [y + 2, x + 1],
-                [y + 2, x - 1],
-                [y - 2, x + 1],
-                [y - 2, x - 1],
-                [y + 1, x + 2],
-                [y + 1, x - 2],
-                [y - 1, x + 2],
-                [y - 1, x - 2],
-            ];
-
-            /**
-             * Check for Bounds
-             */
-            knightMoves = knightMoves.filter(position => !isTileOutsideBoard(position[0], position[1]));
-
-            /**
-             * Check for Own Pieces
-             */
-            knightMoves = knightMoves.filter(position => {
-                const y = position[0];
-                const x = position[1];
-
-                if (this.state.tiles[y][x].current) {
-                    return this.state.tiles[y][x].current.player !== this.state.selectedPiece.player;
-                } else return true;
-            })
-
-            knightMoves.forEach(position => {
-                commit('MARK_POSSIBLE_MOVE', position);
-            })
-        },
-        bishopMove({commit}, pos) {
-            let y = pos[0];
-            let x = pos[1];
-
-            const bishopMoves = getDiagonals(y, x)
-
-            bishopMoves.forEach(position => {
-                commit('MARK_POSSIBLE_MOVE', position);
-            })
-        },
-        rookMove({commit}, pos) {
-            let y = pos[0];
-            let x = pos[1];
-
-            const rookMoves = getStraights(y, x)
-
-            rookMoves.forEach(position => {
-                commit('MARK_POSSIBLE_MOVE', position);
-            })
-        },
-        queenMove({commit}, pos) {
-            let y = pos[0];
-            let x = pos[1];
-
-            const diagonals = getDiagonals(y, x)
-            const straights = getStraights(y, x)
-            const queenMoves = diagonals.concat(straights)
-
-            queenMoves.forEach(position => {
-                commit('MARK_POSSIBLE_MOVE', position);
-            })
         },
         commitMove({commit}, tile) {
             commit('MOVE_PIECE', tile);
             commit('SWITCH_TURN');
+            commit('UPDATE_ATTACKED_TILES');
+            commit('CHECK_FOR_CHECK')
+            // commit('CHECK_FOR_MATE')
             commit('REMOVE_TILE_HIGHLIGHTS');
-        }
-        ,
-        beatPiece({commit}, piece) {
-            commit('BEAT_PIECE', piece)
         }
     },
     getters: {
         turn: state => state.turn,
         moves: state => state.moves,
         beatenPieces: state => state.beatenPieces,
+        attackedTiles: state => state.attackedTiles,
+        selectedPiece: state => state.selectedPiece,
         pieces: state => state.pieces,
         tiles: state => state.tiles
     }

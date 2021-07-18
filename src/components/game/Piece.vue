@@ -5,17 +5,44 @@
            'rank-' + piece.position[1],
             'file-' + piece.position[0],
             {'selected': piece.selected},
-            {'beaten': piece.beaten}]">
+            {'beaten': piece.beaten}]"
+       @click="startTurn()"
+  >
     <img :src="iconPath" width="40" height="40" :alt="piece.type.name">
+
+    <span style="font-size: 10px">{{piece.id}}: {{ attackedTiles }}</span>
   </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex';
+import {getDiagonalMoves, getStraightMoves, getPawnMoves, getKnightMoves, getKingMoves} from "../../store/moves";
 
 export default {
   name: "Piece",
   props: ['piece'],
+  methods: {
+    startTurn() {
+      if (this.piece.player !== this.$store.getters.turn) {
+        return
+      }
+
+      this.$store.dispatch('deselectPieces');
+      this.$store.dispatch('selectPiece', this.piece);
+      this.$store.dispatch('markPossibleMoves', this.moves);
+    },
+    updatePieceMoves() {
+      console.log('update piece moves')
+      this.$store.dispatch('updatePieceMoves', {
+        id: this.id,
+        moves: this.moves,
+        attackedTiles: this.attackedTiles
+      })
+    }
+  },
+  mounted() {
+    this.updatePieceMoves()
+  },
   computed: {
     ...mapGetters([
       'turn',
@@ -29,14 +56,54 @@ export default {
     },
     x: function () {
       return this.piece.position[1];
+    },
+    id: function () {
+      return this.piece.id;
+    },
+    attackedTiles: function () {
+      switch (this.piece.type.name) {
+        case 'Pawn':
+          return getPawnMoves(this.y, this.x, this.piece.moved).attackedTiles
+          case 'Knight':
+            return getKnightMoves(this.y, this.x)
+          case 'Bishop':
+            return getDiagonalMoves(this.y, this.x)
+          case 'Rook':
+            return getStraightMoves(this.y, this.x)
+          case 'Queen':
+            return getStraightMoves(this.y, this.x).concat(getDiagonalMoves(this.y, this.x))
+          case 'King':
+            return getKingMoves(this.y, this.x)
+      }
+
+      return {}
+
+    },
+    moves: function () {
+      switch (this.piece.type.name) {
+        case 'Pawn':
+          return getPawnMoves(this.y, this.x, this.piece.moved).moves
+        case 'Knight':
+          return getKnightMoves(this.y, this.x)
+        case 'Bishop':
+          return getDiagonalMoves(this.y, this.x)
+        case 'Rook':
+          return getStraightMoves(this.y, this.x)
+        case 'Queen':
+          return getStraightMoves(this.y, this.x).concat(getDiagonalMoves(this.y, this.x))
+        case 'King':
+          return getKingMoves(this.y, this.x)
+      }
+
+      return {}
     }
   }
 }
+
 </script>
 
 <style scoped lang="scss">
 .piece {
-  pointer-events: none;
   z-index: 3;
 
   img {

@@ -3,8 +3,7 @@
        :class="[{'color':tile.color}, {'possibleMove':tile.possibleMove}, {'current': tile.current}]"
        :data-file="[tile.y]"
        :data-rank="[tile.x]"
-       @click="tile.possibleMove ? commitMove(tile) : startTurn(tile.current)"
-  >
+       @click="tile.possibleMove ? commitMove(tile) : console.log('huhu')">
     <span>{{ tile.notation }}</span>
   </div>
 </template>
@@ -29,19 +28,7 @@ export default {
   methods: {
     commitMove(tile) {
       this.$store.dispatch('commitMove', tile);
-    },
-    startTurn(piece) {
-      if (!piece || piece.player !== this.turn) {
-        return;
-      }
-
-      if (piece.selected) {
-        this.$store.dispatch('deselectPieces');
-        this.$store.dispatch('removeTileHighlight');
-        return;
-      }
-
-      this.$store.dispatch('move', piece);
+      this.$emit('commitMove')
     }
   }
 }
@@ -85,5 +72,9 @@ export default {
 
 .tile.possibleMove.current::after {
   background: var(--highlightBeat);
+}
+
+.tile span {
+  font-size: clamp(10px, 1.5vw, 16px);
 }
 </style>

@@ -1,3 +1,5 @@
+import store from "./index";
+
 /**
  * @param rank
  * @returns {string|number}
@@ -333,6 +335,29 @@ export function createTiles() {
     return tiles;
 }
 
-export function isTileOutsideBoard(y, x){
+export function isTileOccupiedByEnemy(y, x, player) {
+    if (store.getters.tiles[y][x].current) {
+        return (player !== store.getters.tiles[y][x].current.player);
+    } else return false;
+}
+
+export function isTileOccupiedByPlayer(y, x, player) {
+    if (store.getters.tiles[y][x].current) {
+        return player === store.getters.tiles[y][x].current.player;
+    } else return false;
+}
+
+export function isTileOutsideBoard(y, x) {
     return (y > 7 || x > 7 || y < 0 || x < 0);
+}
+
+export function isTileAttacked(y, x, player) {
+    store.getters.attackedTiles[player].forEach(position => {
+        if (position[0] === y && position[1] === x) {
+            console.log('TRUE')
+            return false
+        }
+    })
+
+    return true
 }

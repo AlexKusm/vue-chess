@@ -1,10 +1,10 @@
 <template>
   <div class="board">
     <div class="file" v-for="(column, i) in tiles" :key="'column-'+ i">
-      <Tile :tile="tile" v-for="tile in column" :key="'tile-' + tile.id" ref="tiles"/>
+      <Tile @commitMove="updatePieceMoves" :tile="tile" v-for="tile in column" :key="'tile-' + tile.id" ref="tiles"/>
     </div>
 
-    <Piece v-for="piece in pieces" :piece="piece" :key="piece.id" :tiles="tiles"/>
+    <Piece v-for="piece in pieces" :piece="piece" :key="piece.id" :tiles="tiles" :ref="setItemRef"/>
   </div>
 </template>
 
@@ -19,12 +19,28 @@ export default {
     Tile,
     Piece
   },
+  data() {
+    return {
+      itemRefs: []
+    }
+  },
+  methods: {
+    setItemRef(el) {
+      if (el) {
+        this.itemRefs.push(el)
+      }
+    },
+    updatePieceMoves() {
+      this.itemRefs.forEach(p => p.updatePieceMoves())
+    }
+  },
   computed: {
     ...mapGetters([
       'turn',
       'tiles',
       'pieces',
-      'beatenPieces'
+      'beatenPieces',
+      'attackedTiles'
     ])
   }
 }

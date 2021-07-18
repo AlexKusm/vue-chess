@@ -18,7 +18,6 @@ export default {
       'beatenPieces'
     ]),
     playersBeatenPiece: function () {
-      console.log(this.color)
       return this.beatenPieces.filter(p => p.player === this.color)
     }
   }
