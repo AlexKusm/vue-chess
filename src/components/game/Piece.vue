@@ -6,11 +6,14 @@
             'file-' + piece.position[0],
             {'selected': piece.selected},
             {'beaten': piece.beaten}]"
-       @click="startTurn()"
-  >
+       @click="startTurn()">
     <img :src="iconPath" width="40" height="40" :alt="piece.type.name">
 
-    <span style="font-size: 10px">{{piece.id}}: {{ attackedTiles }}</span>
+    <div class="debug">
+      <span v-if="debug.attackedTiles" style="font-size: 10px">attacked: {{ attackedTiles }}</span>
+      <span v-if="debug.moves" style="font-size: 10px;display: block">moves: {{ moves }}</span>
+      <span v-if="debug.position" style="font-size: 10px;display: block">y:{{y}}, x:{{ x }}</span>
+    </div>
   </div>
 </template>
 
@@ -21,6 +24,15 @@ import {getDiagonalMoves, getStraightMoves, getPawnMoves, getKnightMoves, getKin
 export default {
   name: "Piece",
   props: ['piece'],
+  data () {
+    return {
+      debug: {
+        attackedTiles: false,
+        moves: false,
+        position: false,
+      }
+    }
+  },
   methods: {
     startTurn() {
       if (this.piece.player !== this.$store.getters.turn) {
@@ -32,7 +44,6 @@ export default {
       this.$store.dispatch('markPossibleMoves', this.moves);
     },
     updatePieceMoves() {
-      console.log('update piece moves')
       this.$store.dispatch('updatePieceMoves', {
         id: this.id,
         moves: this.moves,
