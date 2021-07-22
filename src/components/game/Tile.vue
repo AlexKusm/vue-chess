@@ -3,8 +3,12 @@
        :class="[{'color':tile.color}, {'possibleMove':tile.possibleMove}, {'current': tile.current}]"
        :data-file="[tile.y]"
        :data-rank="[tile.x]"
-       @click="tile.possibleMove ? commitMove(tile) : console.log('huhu')">
+       @click="tile.possibleMove === true ? commitMove(tile) : deselect()">
     <span>{{ tile.notation }}</span>
+
+    <div class="debug">
+      <span>{{possibleMove}}</span>
+    </div>
   </div>
 </template>
 
@@ -29,6 +33,9 @@ export default {
     commitMove(tile) {
       this.$store.dispatch('commitMove', tile);
       this.$emit('commitMove')
+    },
+    deselect() {
+      this.$store.dispatch('deselectPieces');
     }
   }
 }
