@@ -76,6 +76,9 @@ const store = createStore({
         },
 
         UPDATE_ATTACKED_TILES(state) {
+            /**
+             * Flush State
+             */
             state.attackedTiles = {
                 black: [],
                 white: []
@@ -128,9 +131,9 @@ const store = createStore({
             }
         },
 
-        CHECK_FOR_CHECK(state) {
-            console.log(state.pieces)
-        }
+        // CHECK_FOR_CHECK(state) {
+        //     console.log(state.pieces)
+        // }
     },
     actions: {
         newGame({commit}) {
@@ -160,7 +163,7 @@ const store = createStore({
             commit('MOVE_PIECE', tile);
             commit('SWITCH_TURN');
             commit('UPDATE_ATTACKED_TILES');
-            commit('CHECK_FOR_CHECK')
+            // commit('CHECK_FOR_CHECK')
             // commit('CHECK_FOR_MATE')
             commit('REMOVE_TILE_HIGHLIGHTS');
         }

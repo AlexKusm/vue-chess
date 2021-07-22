@@ -331,7 +331,6 @@ export function createTiles() {
         tiles.push(rank);
     }
 
-    console.log(tiles)
     return tiles;
 }
 
@@ -349,15 +348,4 @@ export function isTileOccupiedByPlayer(y, x, player) {
 
 export function isTileOutsideBoard(y, x) {
     return (y > 7 || x > 7 || y < 0 || x < 0);
-}
-
-export function isTileAttacked(y, x, player) {
-    store.getters.attackedTiles[player].forEach(position => {
-        if (position[0] === y && position[1] === x) {
-            console.log('TRUE')
-            return false
-        }
-    })
-
-    return true
 }

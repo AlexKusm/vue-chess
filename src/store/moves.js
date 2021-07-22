@@ -1,5 +1,5 @@
 import store from "./index";
-import {isTileOccupiedByPlayer, isTileOccupiedByEnemy, isTileOutsideBoard, isTileAttacked} from "./helpers";
+import {isTileOccupiedByPlayer, isTileOccupiedByEnemy, isTileOutsideBoard} from "./helpers";
 
 export function getPawnMoves(y, x, pawnHasMoved) {
     let player = store.getters.tiles[y][x].current.player
@@ -53,7 +53,9 @@ export function getPawnMoves(y, x, pawnHasMoved) {
     }
 }
 
-export function getKnightMoves(y, x, player) {
+export function getKnightMoves(y, x) {
+    let player = store.getters.tiles[y][x].current.player
+
     /**
      * All Possible Knight Jumps
      */
@@ -71,6 +73,7 @@ export function getKnightMoves(y, x, player) {
     /**
      * Check for Bounds and Own Pieces
      */
+
     moves = moves.filter(position => !isTileOutsideBoard(position[0], position[1]));
     moves = moves.filter(position => !isTileOccupiedByPlayer(position[0], position[1], player));
 
@@ -175,11 +178,19 @@ export function getKingMoves(y, x) {
         enemyPlayer = 'white'
     }
 
-    console.log(moves)
-
-    moves.filter(position => isTileAttacked(position[0], position[1], enemyPlayer))
-
-    console.log(moves)
+    /**
+     * Filter King moves by Attacked Tiles from Enemy Player
+     * TODO: Filtering did not work as smooth as expected here
+     */
+    if (store.getters.attackedTiles[enemyPlayer]) {
+        store.getters.attackedTiles[enemyPlayer].forEach(p => {
+            moves = moves.filter((position) => {
+                return !(position[0] === p[0] && position[1] === p[1])
+            })
+        })
+    } else {
+        return []
+    }
 
     return moves
 }
