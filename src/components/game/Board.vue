@@ -4,7 +4,7 @@
       <Tile @commitMove="updatePieceMoves" :tile="tile" v-for="tile in column" :key="'tile-' + tile.id" ref="tiles"/>
     </div>
 
-    <Piece v-for="piece in pieces" :piece="piece" :key="piece.id" :tiles="tiles" :ref="setItemRef"/>
+    <Piece v-for="piece in pieces" :piece="piece" :key="piece.id" :tiles="tiles" :ref="pieceRef"/>
   </div>
 </template>
 
@@ -25,13 +25,13 @@ export default {
     }
   },
   methods: {
-    setItemRef(el) {
+    pieceRef(el) {
       if (el) {
         this.itemRefs.push(el)
       }
     },
     updatePieceMoves() {
-      this.itemRefs.forEach(p => p.updatePieceMoves())
+      this.itemRefs.forEach(piece => piece.updatePieceMoves())
     }
   },
   computed: {
