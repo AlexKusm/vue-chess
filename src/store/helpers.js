@@ -350,6 +350,16 @@ export function isTileOutsideBoard(y, x) {
     return (y > 7 || x > 7 || y < 0 || x < 0);
 }
 
+// export function getPieceForPosition(y, x) {
+//     let piece;
+//
+//     store.getters.pieces.forEach(p => {
+//         if (p.x === x && p.y === y) {
+//
+//         }
+//     })
+// }
+
 // export function kingInCheck() {
 //     if (store.getters.attackedTiles[store.getters.turn]) {
 //         store.getters.attackedTiles[store.getters.turn].forEach(p => {

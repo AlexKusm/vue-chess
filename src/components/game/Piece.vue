@@ -90,7 +90,7 @@ export default {
         case 'Rook':
           return getStraightMoves(this.y, this.x)
         case 'Queen':
-          return getStraightMoves(this.y, this.x).concat(getDiagonalMoves(this.y, this.x))
+          return getStraightMoves(this.y, this.x).concat(getDiagonalMoves(this.y, this.x, 8, false))
         case 'King':
           return getKingMoves(this.y, this.x)
       }

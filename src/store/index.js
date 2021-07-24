@@ -128,7 +128,6 @@ const store = createStore({
         },
         updatePieceMoves({commit}, piece) {
             commit('UPDATE_PIECE_MOVES', piece)
-            commit('UPDATE_ATTACKED_TILES')
         },
         markPossibleMoves({commit}, moves) {
             moves.forEach(position => {
@@ -141,7 +140,6 @@ const store = createStore({
         },
         commitMove({commit}, tile) {
             commit('MOVE_PIECE', tile);
-            commit('UPDATE_ATTACKED_TILES');
             commit('CHECK_FOR_CHECK')
             // commit('CHECK_FOR_MATE')
             commit('REMOVE_TILE_HIGHLIGHTS');

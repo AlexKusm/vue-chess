@@ -73,14 +73,23 @@ export function getKnightMoves(y, x) {
     /**
      * Check for Bounds and Own Pieces
      */
-
     moves = moves.filter(position => !isTileOutsideBoard(position[0], position[1]));
     moves = moves.filter(position => !isTileOccupiedByPlayer(position[0], position[1], player));
 
     return moves
 }
 
-export function getDiagonalMoves(y, x, d = 8) {
+/**
+ * returns all straight tiles
+ * for moves, loop can be interrupted as a piece can be in the way
+ * for possible pinned pieces, we need to look behind those pieces for the king and set breakLoop = true
+ * @param y
+ * @param x
+ * @param d
+ * @param breakLoop
+ * @returns {*[]}
+ */
+export function getDiagonalMoves(y, x, d = 8, breakLoop = true) {
     let player = store.getters.tiles[y][x].current.player
     let piece;
     let moves = [];
@@ -92,11 +101,11 @@ export function getDiagonalMoves(y, x, d = 8) {
 
         piece = store.getters.tiles[y - i][x - i].current
 
-        if (piece && (piece.player === player)) {
+        if (piece && (piece.player === player) && breakLoop) {
             break;
         }
 
-        if (piece) {
+        if (piece  && breakLoop) {
             moves.push([y - i, x - i])
             break;
         }
@@ -111,11 +120,11 @@ export function getDiagonalMoves(y, x, d = 8) {
 
         piece = store.getters.tiles[y + i][x + i].current
 
-        if (piece && (piece.player === player)) {
+        if (piece && (piece.player === player) && breakLoop) {
             break;
         }
 
-        if (piece) {
+        if (piece && breakLoop) {
             moves.push([y + i, x + i])
             break;
         }
@@ -130,11 +139,11 @@ export function getDiagonalMoves(y, x, d = 8) {
 
         piece = store.getters.tiles[y + i][x - i].current
 
-        if (piece && (piece.player === player)) {
+        if (piece && (piece.player === player) && breakLoop) {
             break;
         }
 
-        if (piece) {
+        if (piece && breakLoop) {
             moves.push([y + i, x - i])
             break;
         }
@@ -149,11 +158,11 @@ export function getDiagonalMoves(y, x, d = 8) {
 
         piece = store.getters.tiles[y - i][x + i].current
 
-        if (piece && (piece.player === player)) {
+        if (piece && (piece.player === player) && breakLoop) {
             break;
         }
 
-        if (piece) {
+        if (piece && breakLoop) {
             moves.push([y - i, x + i])
             break;
         }
@@ -188,25 +197,20 @@ export function getKingMoves(y, x) {
         }
     })
 
-
-    // /**
-    //  * Filter King moves by Attacked Tiles from Enemy Player
-    //  * TODO: Filtering did not work as smooth as expected here
-    //  */
-    // if (store.getters.attackedTiles[enemyPlayer]) {
-    //     store.getters.attackedTiles[enemyPlayer].forEach(p => {
-    //         moves = moves.filter((position) => {
-    //             return !(position[0] === p[0] && position[1] === p[1])
-    //         })
-    //     })
-    // } else {
-    //     return []
-    // }
-
     return moves
 }
 
-export function getStraightMoves(y, x, d = 8) {
+/**
+ * returns all diagonal tiles
+ * for moves, loop can be interrupted as a piece can be in the way
+ * for possible pinned pieces, we need to look behind those pieces for the king and set breakLoop = true
+ * @param y
+ * @param x
+ * @param d
+ * @param breakLoop
+ * @returns {*[]}
+ */
+export function getStraightMoves(y, x, d = 8, breakLoop = false) {
     let player = store.getters.tiles[y][x].current.player
     let piece;
     let moves = [];
@@ -218,11 +222,11 @@ export function getStraightMoves(y, x, d = 8) {
 
         piece = store.getters.tiles[y - i][x].current
 
-        if (piece && (piece.player === player)) {
+        if (piece && (piece.player === player) && breakLoop) {
             break;
         }
 
-        if (piece) {
+        if (piece && breakLoop) {
             moves.push([y - i, x])
             break;
         }
@@ -237,11 +241,11 @@ export function getStraightMoves(y, x, d = 8) {
 
         piece = store.getters.tiles[y + i][x].current
 
-        if (piece && (piece.player === player)) {
+        if (piece && (piece.player === player) && breakLoop) {
             break;
         }
 
-        if (piece) {
+        if (piece && breakLoop) {
             moves.push([y + i, x])
             break;
         }
@@ -256,11 +260,11 @@ export function getStraightMoves(y, x, d = 8) {
 
         piece = store.getters.tiles[y][x - i].current
 
-        if (piece && (piece.player === player)) {
+        if (piece && (piece.player === player) && breakLoop) {
             break;
         }
 
-        if (piece) {
+        if (piece && breakLoop) {
             moves.push([y, x - i])
             break;
         }
@@ -275,11 +279,11 @@ export function getStraightMoves(y, x, d = 8) {
 
         piece = store.getters.tiles[y][x + i].current
 
-        if (piece && (piece.player === player)) {
+        if (piece && (piece.player === player) && breakLoop) {
             break;
         }
 
-        if (piece) {
+        if (piece && breakLoop) {
             moves.push([y, x + i])
             break;
         }
