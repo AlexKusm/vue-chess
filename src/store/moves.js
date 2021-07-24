@@ -30,9 +30,9 @@ export function getPawnMoves(x, y, pawnHasMoved) {
     let attackedTiles = []
 
     if (player === 'white') {
-        attackedTiles.push([x - 1, y - 1], [x - 1, y + 1])
+        attackedTiles.push([x + 1, y - 1], [x - 1, y - 1])
     } else {
-        attackedTiles.push([x + 1, y - 1], [x + 1, y + 1])
+        attackedTiles.push([x + 1, y + 1], [x - 1, y + 1])
     }
 
     attackedTiles = attackedTiles.filter(position => !isTileOutsideBoard(position[0], position[1]));
