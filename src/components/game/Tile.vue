@@ -1,10 +1,11 @@
 <template>
   <div class="tile"
        :class="[{'color':tile.color}, {'possibleMove':tile.possibleMove}, {'current': tile.current}]"
-       :data-file="[tile.y]"
-       :data-rank="[tile.x]"
+       :data-file="[tile.x]"
+       :data-rank="[tile.y]"
        @click="tile.possibleMove === true ? commitMove(tile) : deselect()">
-    <span>{{ tile.y }}, {{tile.x}}</span>
+    <div>{{ tile.x }}, {{tile.y}}</div>
+    <div>{{ tile.notation }}</div>
   </div>
 </template>
 

@@ -22,20 +22,20 @@ const store = createStore({
             state.pieces = pieces;
 
             pieces.forEach(p => {
-                let y = p.position[0];
-                let x = p.position[1];
-                state.tiles[y][x].current = p;
+                let y = p.y;
+                let x = p.x;
+                state.tiles[x][y].current = p;
             })
         },
 
         MARK_POSSIBLE_MOVE(state, position) {
-            let y = position[0]
-            let x = position[1]
+            let x = position[0]
+            let y = position[1]
 
-            state.tiles[y][x].possibleMove = true;
+            state.tiles[x][y].possibleMove = true;
 
-            if (state.tiles[y][x].current) {
-                state.tiles[y][x].current.possibleBeat = true;
+            if (state.tiles[x][y].current) {
+                state.tiles[x][y].current.possibleBeat = true;
             }
         },
 
@@ -73,26 +73,30 @@ const store = createStore({
             }
         },
 
-        MOVE_PIECE(state, tile) {
-            let y = state.selectedPiece.position[0];
-            let x = state.selectedPiece.position[1];
+        MOVE_PIECE(state, target) {
+            let x = state.selectedPiece.x;
+            let y = state.selectedPiece.y;
+
+            console.log('target-x:', target.x)
+            console.log('target-y:', target.y)
+
 
             /**
              * beat current piece if present
              */
-            if (tile.current) {
-                const index = state.pieces.findIndex(p => p.id === tile.current.id)
+            if (target.current) {
+                const index = state.pieces.findIndex(p => p.id === target.current.id)
 
-                tile.current.beaten = true
+                target.current.beaten = true
                 state.pieces.splice(index, 1);
-                state.beatenPieces.push(tile.current)
+                state.beatenPieces.push(target.current)
             }
 
-            state.tiles[tile.y][tile.x].current = state.selectedPiece;
-            state.selectedPiece.position[0] = tile.y
-            state.selectedPiece.position[1] = tile.x
+            state.tiles[target.x][target.y].current = state.selectedPiece;
+            state.selectedPiece.x = target.x
+            state.selectedPiece.y = target.y
             state.selectedPiece.moved = true;
-            state.tiles[y][x].current = null;
+            state.tiles[x][y].current = null;
 
             // const notation = state.selectedPiece.type.notation + tile.notation;
 

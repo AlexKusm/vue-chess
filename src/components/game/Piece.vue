@@ -2,15 +2,17 @@
   <div class="piece"
        :class="[
            'id-' + piece.id,
-           'rank-' + piece.position[1],
-            'file-' + piece.position[0],
+           'rank-' + piece.x,
+           'file-' + piece.y,
+           'x-' + piece.x,
+           'y-' + piece.y,
             {'selected': piece.selected},
             {'beaten': piece.beaten}]"
        @click="piece.possibleBeat ? beat() : startTurn()">
     <img :src="iconPath" width="55" height="55" :alt="piece.type.name">
 
     <div class="debug">
-      <span v-if="debug.attackedTiles" style="font-size: 10px">id: {{ this.id }}</span>
+      <span v-if="debug.id" style="font-size: 10px">id: {{ id }}</span>
       <span v-if="debug.attackedTiles" style="font-size: 10px">attacked: {{ attackedTiles }}</span>
       <span v-if="debug.moves" style="font-size: 10px;display: block">moves: {{ moves }}</span>
       <span v-if="debug.position" style="font-size: 10px;display: block">y:{{ y }}, x:{{ x }}</span>
@@ -55,7 +57,7 @@ export default {
       })
     },
     beat() {
-      const tile = this.$store.getters.tiles[this.y][this.x]
+      const tile = this.$store.getters.tiles[this.piece.x][this.piece.y]
       this.$store.dispatch('commitMove', tile);
     }
   },
@@ -70,29 +72,23 @@ export default {
     iconPath: function () {
       return require('../../assets/pieces/default/' + this.piece.player + this.piece.type.name + '.svg');
     },
-    y: function () {
-      return this.piece.position[0];
-    },
-    x: function () {
-      return this.piece.position[1];
-    },
     id: function () {
       return this.piece.id;
     },
     attackedTiles: function () {
       switch (this.piece.type.name) {
         case 'Pawn':
-          return getPawnMoves(this.y, this.x, this.piece.moved).attackedTiles
+          return getPawnMoves(this.piece.x, this.piece.y, this.piece.moved).attackedTiles
         case 'Knight':
-          return getKnightMoves(this.y, this.x)
+          return getKnightMoves(this.piece.x, this.piece.y)
         case 'Bishop':
-          return getDiagonalMoves(this.y, this.x)
+          return getDiagonalMoves(this.piece.x, this.piece.y)
         case 'Rook':
-          return getStraightMoves(this.y, this.x)
+          return getStraightMoves(this.piece.x, this.piece.y)
         case 'Queen':
-          return getStraightMoves(this.y, this.x).concat(getDiagonalMoves(this.y, this.x, 8, false))
+          return getStraightMoves(this.piece.x, this.piece.y).concat(getDiagonalMoves(this.piece.x, this.piece.y))
         case 'King':
-          return getKingMoves(this.y, this.x)
+          return getKingMoves(this.piece.x, this.piece.y)
       }
 
       return {}
@@ -101,17 +97,17 @@ export default {
     moves: function () {
       switch (this.piece.type.name) {
         case 'Pawn':
-          return getPawnMoves(this.y, this.x, this.piece.moved).moves
+          return getPawnMoves(this.piece.x, this.piece.y, this.piece.moved).moves
         case 'Knight':
-          return getKnightMoves(this.y, this.x)
+          return getKnightMoves(this.piece.x, this.piece.y)
         case 'Bishop':
-          return getDiagonalMoves(this.y, this.x)
+          return getDiagonalMoves(this.piece.x, this.piece.y)
         case 'Rook':
-          return getStraightMoves(this.y, this.x)
+          return getStraightMoves(this.piece.x, this.piece.y)
         case 'Queen':
-          return getStraightMoves(this.y, this.x).concat(getDiagonalMoves(this.y, this.x))
+          return getStraightMoves(this.piece.x, this.piece.y).concat(getDiagonalMoves(this.piece.x, this.piece.y))
         case 'King':
-          return getKingMoves(this.y, this.x)
+          return getKingMoves(this.piece.x, this.piece.y)
       }
 
       return {}

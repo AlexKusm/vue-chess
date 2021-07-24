@@ -58,8 +58,9 @@ export default {
 .board {
   border-radius: 2px;
   box-sizing: border-box;
-  display: block;
+  display: grid;
   flex: 1 0 auto;
+  grid-template-columns: repeat(8, 1fr);
   margin: auto;
   max-width: 900px;
   max-height: 900px;
@@ -89,10 +90,5 @@ export default {
     border: 10px solid #555;
     outline: 2px solid black;
   }
-}
-
-.file {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
 }
 </style>

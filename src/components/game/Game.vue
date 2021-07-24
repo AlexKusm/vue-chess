@@ -50,7 +50,7 @@ export default {
 }
 
 .check {
-  position: fixed;
+  position: relative;ition: fixed;
   top: 50px;
   left: 50px;
 }
