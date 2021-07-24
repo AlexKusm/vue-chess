@@ -1,5 +1,5 @@
 <template>
-  <div class="board">
+  <div class="board" :class="this.turn">
     <div class="file" v-for="(column, i) in tiles" :key="'column-'+ i">
       <Tile @commitMove="updatePieceMoves" :tile="tile" v-for="tile in column" :key="'tile-' + tile.id" ref="tiles"/>
     </div>
@@ -39,8 +39,7 @@ export default {
       'turn',
       'tiles',
       'pieces',
-      'beatenPieces',
-      'attackedTiles'
+      'beatenPieces'
     ])
   }
 }
@@ -57,11 +56,15 @@ export default {
 }
 
 .board {
-  border: 10px solid darken(saddlebrown, 5);
-  border-radius: 10px;
-  max-width: 700px;
+  border-radius: 2px;
+  box-sizing: border-box;
+  display: block;
+  flex: 1 0 auto;
   margin: auto;
-  margin-top: 2rem;
+  max-width: 900px;
+  max-height: 900px;
+  width: 100%;
+  transition: border-color 400ms ease, outline 400ms ease;
   position: relative;
 
   &::before {
@@ -75,6 +78,16 @@ export default {
     left: 0;
     width: 100%;
     z-index: 2;
+  }
+
+  &.white {
+    border: 10px solid #ddd;
+    outline: 2px solid white;
+  }
+
+  &.black {
+    border: 10px solid #555;
+    outline: 2px solid black;
   }
 }
 

@@ -6,13 +6,15 @@
             'file-' + piece.position[0],
             {'selected': piece.selected},
             {'beaten': piece.beaten}]"
-       @click="startTurn()">
-    <img :src="iconPath" width="40" height="40" :alt="piece.type.name">
+       @click="piece.possibleBeat ? beat() : startTurn()">
+    <img :src="iconPath" width="55" height="55" :alt="piece.type.name">
 
     <div class="debug">
+      <span v-if="debug.attackedTiles" style="font-size: 10px">id: {{ this.id }}</span>
       <span v-if="debug.attackedTiles" style="font-size: 10px">attacked: {{ attackedTiles }}</span>
       <span v-if="debug.moves" style="font-size: 10px;display: block">moves: {{ moves }}</span>
-      <span v-if="debug.position" style="font-size: 10px;display: block">y:{{y}}, x:{{ x }}</span>
+      <span v-if="debug.position" style="font-size: 10px;display: block">y:{{ y }}, x:{{ x }}</span>
+      <span v-if="debug.possibleBeat" style="font-size: 10px;display: block">{{ piece.possibleBeat }}</span>
     </div>
   </div>
 </template>
@@ -24,12 +26,14 @@ import {getDiagonalMoves, getStraightMoves, getPawnMoves, getKnightMoves, getKin
 export default {
   name: "Piece",
   props: ['piece'],
-  data () {
+  data() {
     return {
       debug: {
+        id: true,
         attackedTiles: false,
         moves: false,
         position: false,
+        possibleBeat: false,
       }
     }
   },
@@ -49,6 +53,10 @@ export default {
         moves: this.moves,
         attackedTiles: this.attackedTiles
       })
+    },
+    beat() {
+      const tile = this.$store.getters.tiles[this.y][this.x]
+      this.$store.dispatch('commitMove', tile);
     }
   },
   mounted() {
@@ -75,16 +83,16 @@ export default {
       switch (this.piece.type.name) {
         case 'Pawn':
           return getPawnMoves(this.y, this.x, this.piece.moved).attackedTiles
-          case 'Knight':
-            return getKnightMoves(this.y, this.x)
-          case 'Bishop':
-            return getDiagonalMoves(this.y, this.x)
-          case 'Rook':
-            return getStraightMoves(this.y, this.x)
-          case 'Queen':
-            return getStraightMoves(this.y, this.x).concat(getDiagonalMoves(this.y, this.x))
-          case 'King':
-            return getKingMoves(this.y, this.x)
+        case 'Knight':
+          return getKnightMoves(this.y, this.x)
+        case 'Bishop':
+          return getDiagonalMoves(this.y, this.x)
+        case 'Rook':
+          return getStraightMoves(this.y, this.x)
+        case 'Queen':
+          return getStraightMoves(this.y, this.x).concat(getDiagonalMoves(this.y, this.x))
+        case 'King':
+          return getKingMoves(this.y, this.x)
       }
 
       return {}
@@ -118,8 +126,12 @@ export default {
   z-index: 3;
 
   img {
-    max-height: 40%;
+    max-height: 60%;
   }
+}
+
+.piece.selected {
+  background: transparentize(#ffff00, 0.7);
 }
 
 .piece:not(.beaten) {

@@ -349,3 +349,13 @@ export function isTileOccupiedByPlayer(y, x, player) {
 export function isTileOutsideBoard(y, x) {
     return (y > 7 || x > 7 || y < 0 || x < 0);
 }
+
+// export function kingInCheck() {
+//     if (store.getters.attackedTiles[store.getters.turn]) {
+//         store.getters.attackedTiles[store.getters.turn].forEach(p => {
+//             console.log(p)
+//         })
+//     } else {
+//         return []
+//     }
+// }

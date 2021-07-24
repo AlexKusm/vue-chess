@@ -25,5 +25,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.player {}
+.player {
+  .piece {
+    position: absolute;
+  }
+}
 </style>

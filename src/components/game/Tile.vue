@@ -4,11 +4,7 @@
        :data-file="[tile.y]"
        :data-rank="[tile.x]"
        @click="tile.possibleMove === true ? commitMove(tile) : deselect()">
-    <span>{{ tile.notation }}</span>
-
-    <div class="debug">
-      <span>{{possibleMove}}</span>
-    </div>
+    <span>{{ tile.y }}, {{tile.x}}</span>
   </div>
 </template>
 
@@ -49,11 +45,11 @@ export default {
 }
 
 .tile {
-  background: lighten(#997766, 15);
+  background: darken(white, 15);
 }
 
 .tile.color {
-  background: #552211;
+  background: lightslategray;
 }
 
 .tile.possibleMove,
@@ -63,18 +59,17 @@ export default {
 
 .tile.possibleMove::after {
   background: var(--highlight);
-  border: 2px solid white;
-  border-radius: 50%;
+  border: 5px solid white;
   content: '';
   cursor: pointer;
   display: block;
   position: absolute;
-  height: 50%;
+  height: 80%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   opacity: 0.2;
-  width: 50%;
+  width: 80%;
 }
 
 .tile.possibleMove.current::after {
@@ -83,5 +78,6 @@ export default {
 
 .tile span {
   font-size: clamp(10px, 1.5vw, 16px);
+  z-index: 90;
 }
 </style>

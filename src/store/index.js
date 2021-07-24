@@ -9,9 +9,9 @@ const store = createStore({
         tiles: [],
         pieces: [],
         moveHistory: [],
-        attackedTiles: [],
         selectedPiece: {},
-        beatenPieces: []
+        beatenPieces: [],
+        check: false
     },
     mutations: {
         CREATE_BOARD(state, tiles) {
@@ -26,10 +26,6 @@ const store = createStore({
                 let x = p.position[1];
                 state.tiles[y][x].current = p;
             })
-        },
-
-        UPDATE_MOVE_HISTORY(state, moves) {
-            state.moveHistory = moves
         },
 
         MARK_POSSIBLE_MOVE(state, position) {
@@ -71,32 +67,15 @@ const store = createStore({
         UPDATE_PIECE_MOVES(state, piece) {
             let current = state.pieces.find(p => p.id === piece.id)
 
-            current.moves = piece.moves
-            current.attackedTiles = piece.attackedTiles
-        },
-
-        UPDATE_ATTACKED_TILES(state) {
-            /**
-             * Flush State
-             */
-            state.attackedTiles = {
-                black: [],
-                white: []
+            if (current) {
+                current.moves = piece.moves
+                current.attackedTiles = piece.attackedTiles
             }
-
-            state.pieces.forEach(p => {
-                if (p.attackedTiles && p.attackedTiles.length > 0) {
-                    p.attackedTiles.forEach(tile => {
-                        state.attackedTiles[p.player].push(tile)
-                    })
-                }
-            })
         },
 
         MOVE_PIECE(state, tile) {
             let y = state.selectedPiece.position[0];
             let x = state.selectedPiece.position[1];
-            state.tiles[y][x].current = null;
 
             /**
              * beat current piece if present
@@ -113,6 +92,7 @@ const store = createStore({
             state.selectedPiece.position[0] = tile.y
             state.selectedPiece.position[1] = tile.x
             state.selectedPiece.moved = true;
+            state.tiles[y][x].current = null;
 
             // const notation = state.selectedPiece.type.notation + tile.notation;
 
@@ -131,9 +111,9 @@ const store = createStore({
             }
         },
 
-        // CHECK_FOR_CHECK(state) {
-        //     console.log(state.pieces)
-        // }
+        CHECK_FOR_CHECK(state) {
+            state.check = false;
+        }
     },
     actions: {
         newGame({commit}) {
@@ -161,21 +141,25 @@ const store = createStore({
         },
         commitMove({commit}, tile) {
             commit('MOVE_PIECE', tile);
-            commit('SWITCH_TURN');
             commit('UPDATE_ATTACKED_TILES');
-            // commit('CHECK_FOR_CHECK')
+            commit('CHECK_FOR_CHECK')
             // commit('CHECK_FOR_MATE')
             commit('REMOVE_TILE_HIGHLIGHTS');
+            commit('DESELECT_PIECE');
+            commit('SWITCH_TURN');
+        },
+        checkForCheck({commit}) {
+            commit('CHECK_FOR_CHECK')
         }
     },
     getters: {
         turn: state => state.turn,
         moves: state => state.moves,
         beatenPieces: state => state.beatenPieces,
-        attackedTiles: state => state.attackedTiles,
         selectedPiece: state => state.selectedPiece,
         pieces: state => state.pieces,
-        tiles: state => state.tiles
+        tiles: state => state.tiles,
+        check: state => state.check
     }
 });
 

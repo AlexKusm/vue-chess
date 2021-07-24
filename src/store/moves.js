@@ -178,19 +178,30 @@ export function getKingMoves(y, x) {
         enemyPlayer = 'white'
     }
 
-    /**
-     * Filter King moves by Attacked Tiles from Enemy Player
-     * TODO: Filtering did not work as smooth as expected here
-     */
-    if (store.getters.attackedTiles[enemyPlayer]) {
-        store.getters.attackedTiles[enemyPlayer].forEach(p => {
-            moves = moves.filter((position) => {
-                return !(position[0] === p[0] && position[1] === p[1])
+    store.getters.pieces.forEach(piece => {
+        if (piece.player === enemyPlayer && piece.attackedTiles) {
+            piece.attackedTiles.forEach(p => {
+                moves = moves.filter((position) => {
+                    return !(position[0] === p[0] && position[1] === p[1])
+                })
             })
-        })
-    } else {
-        return []
-    }
+        }
+    })
+
+
+    // /**
+    //  * Filter King moves by Attacked Tiles from Enemy Player
+    //  * TODO: Filtering did not work as smooth as expected here
+    //  */
+    // if (store.getters.attackedTiles[enemyPlayer]) {
+    //     store.getters.attackedTiles[enemyPlayer].forEach(p => {
+    //         moves = moves.filter((position) => {
+    //             return !(position[0] === p[0] && position[1] === p[1])
+    //         })
+    //     })
+    // } else {
+    //     return []
+    // }
 
     return moves
 }
