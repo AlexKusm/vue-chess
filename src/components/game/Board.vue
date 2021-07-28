@@ -1,10 +1,18 @@
 <template>
-  <div class="board" :class="this.turn">
+  <div class="board" :class="[this.turn, {'check': this.check}]">
     <div class="file" v-for="(column, i) in tiles" :key="'column-'+ i">
-      <Tile @commitMove="updatePieceMoves" :tile="tile" v-for="tile in column" :key="'tile-' + tile.id" ref="tiles"/>
+      <Tile :tile="tile" v-for="tile in column" :key="'tile-' + tile.id" ref="tiles"/>
     </div>
 
-    <Piece v-for="piece in pieces" :piece="piece" :key="piece.id" :tiles="tiles" :ref="pieceRef"/>
+    <Piece v-for="piece in pieces" :piece="piece" :key="piece.id"/>
+
+    <div class="beatenPieces black">
+      <Piece v-for="piece in blackBeatenPiece" :piece="piece" :key="piece.id" :tiles="tiles"></Piece>
+    </div>
+
+    <div class="beatenPieces white">
+      <Piece v-for="piece in whiteBeatenPiece" :piece="piece" :key="piece.id" :tiles="tiles"></Piece>
+    </div>
   </div>
 </template>
 
@@ -24,23 +32,20 @@ export default {
       itemRefs: []
     }
   },
-  methods: {
-    pieceRef(el) {
-      if (el) {
-        this.itemRefs.push(el)
-      }
-    },
-    updatePieceMoves() {
-      this.itemRefs.forEach(piece => piece.updatePieceMoves())
-    }
-  },
   computed: {
     ...mapGetters([
       'turn',
       'tiles',
+      'check',
       'pieces',
       'beatenPieces'
-    ])
+    ]),
+    blackBeatenPiece: function () {
+      return this.beatenPieces.filter(p => p.player === 'black')
+    },
+    whiteBeatenPiece: function () {
+      return this.beatenPieces.filter(p => p.player === 'white')
+    }
   }
 }
 </script>
@@ -89,6 +94,27 @@ export default {
   &.black {
     border: 10px solid #555;
     outline: 2px solid black;
+  }
+
+  &.check {
+    outline: 2px solid yellow;
+  }
+}
+
+.beatenPieces {
+  align-items: center;
+  display: flex;
+  left: 0;
+  position: absolute;
+  transform: scale(0.7);
+  transform-origin: left center;
+
+  &.white {
+    top: calc(100% + 12px);
+  }
+
+  &.black {
+    bottom: calc(100% + 12px);
   }
 }
 </style>

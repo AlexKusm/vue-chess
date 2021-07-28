@@ -14,11 +14,15 @@ export default {
 </script>
 
 <style lang="scss">
+@import 'src/sass/variables.scss';
+
 :root {
   background: whitesmoke;
+  font-size: (100% / 16) * 10; //1rem = 10px
 }
 
 body {
+  font-size: 1.5rem;
   padding: 0;
   margin: 0;
 }

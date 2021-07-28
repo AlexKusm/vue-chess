@@ -29,7 +29,6 @@ export default {
   methods: {
     commitMove(tile) {
       this.$store.dispatch('commitMove', tile);
-      this.$emit('commitMove')
     },
     deselect() {
       this.$store.dispatch('deselectPieces');

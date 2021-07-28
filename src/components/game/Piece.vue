@@ -13,17 +13,16 @@
 
     <div class="debug">
       <span v-if="debug.id" style="font-size: 10px">id: {{ id }}</span>
-      <span v-if="debug.attackedTiles" style="font-size: 10px">attacked: {{ attackedTiles }}</span>
-      <span v-if="debug.moves" style="font-size: 10px;display: block">moves: {{ moves }}</span>
       <span v-if="debug.position" style="font-size: 10px;display: block">y:{{ y }}, x:{{ x }}</span>
       <span v-if="debug.possibleBeat" style="font-size: 10px;display: block">{{ piece.possibleBeat }}</span>
+      <span v-if="debug.attackedTiles" style="font-size: 10px;display: block">{{ attackedTiles }}</span>
+      <span v-if="debug.moves" style="font-size: 10px;display: block">{{ moves }}</span>
     </div>
   </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
-import {getDiagonalMoves, getStraightMoves, getPawnMoves, getKnightMoves, getKingMoves} from "../../store/moves";
+import {mapGetters, mapMutations} from 'vuex';
 
 export default {
   name: "Piece",
@@ -31,15 +30,18 @@ export default {
   data() {
     return {
       debug: {
-        id: true,
         attackedTiles: false,
-        moves: false,
+        moves: true,
+        id: true,
         position: false,
-        possibleBeat: false,
+        possibleBeat: false
       }
     }
   },
   methods: {
+    ...mapMutations([
+
+    ]),
     startTurn() {
       if (this.piece.player !== this.$store.getters.turn) {
         return
@@ -47,22 +49,12 @@ export default {
 
       this.$store.dispatch('deselectPieces');
       this.$store.dispatch('selectPiece', this.piece);
-      this.$store.dispatch('markPossibleMoves', this.moves);
-    },
-    updatePieceMoves() {
-      this.$store.dispatch('updatePieceMoves', {
-        id: this.id,
-        moves: this.moves,
-        attackedTiles: this.attackedTiles
-      })
+      this.$store.dispatch('markPossibleMoves', this.piece.moves);
     },
     beat() {
       const tile = this.$store.getters.tiles[this.piece.x][this.piece.y]
       this.$store.dispatch('commitMove', tile);
     }
-  },
-  mounted() {
-    this.updatePieceMoves()
   },
   computed: {
     ...mapGetters([
@@ -75,42 +67,22 @@ export default {
     id: function () {
       return this.piece.id;
     },
-    attackedTiles: function () {
-      switch (this.piece.type.name) {
-        case 'Pawn':
-          return getPawnMoves(this.piece.x, this.piece.y, this.piece.moved).attackedTiles
-        case 'Knight':
-          return getKnightMoves(this.piece.x, this.piece.y)
-        case 'Bishop':
-          return getDiagonalMoves(this.piece.x, this.piece.y)
-        case 'Rook':
-          return getStraightMoves(this.piece.x, this.piece.y)
-        case 'Queen':
-          return getStraightMoves(this.piece.x, this.piece.y).concat(getDiagonalMoves(this.piece.x, this.piece.y))
-        case 'King':
-          return getKingMoves(this.piece.x, this.piece.y)
-      }
-
-      return {}
-
-    },
     moves: function () {
-      switch (this.piece.type.name) {
-        case 'Pawn':
-          return getPawnMoves(this.piece.x, this.piece.y, this.piece.moved).moves
-        case 'Knight':
-          return getKnightMoves(this.piece.x, this.piece.y)
-        case 'Bishop':
-          return getDiagonalMoves(this.piece.x, this.piece.y)
-        case 'Rook':
-          return getStraightMoves(this.piece.x, this.piece.y)
-        case 'Queen':
-          return getStraightMoves(this.piece.x, this.piece.y).concat(getDiagonalMoves(this.piece.x, this.piece.y))
-        case 'King':
-          return getKingMoves(this.piece.x, this.piece.y)
+      let piece = this.$store.getters.pieces.find(p => p.id === this.piece.id)
+      if (piece) {
+        return piece.attackedTiles;
+      } else {
+        return undefined
       }
+    },
+    attackedTiles: function () {
+      let piece = this.$store.getters.pieces.find(p => p.id === this.piece.id)
 
-      return {}
+      if (piece) {
+        return piece.moves;
+      } else {
+        return undefined
+      }
     }
   }
 }

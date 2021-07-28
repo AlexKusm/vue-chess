@@ -1,21 +1,26 @@
-import store from "./index";
-import {isTileOccupiedByPlayer, isTileOccupiedByEnemy, isTileOutsideBoard} from "./helpers";
+import {
+    isTileOccupiedByPlayer,
+    isTileOccupiedByEnemy,
+    isTileOutsideBoard, getPieceInPieceset
+} from "./helpers";
 
-export function getPawnMoves(x, y, pawnHasMoved) {
-    console.log(x,y)
-    let player = store.getters.tiles[x][y].current.player
+export function getPawnMoves(piece, pieceSet) {
     let moves = []
+    const player = piece.player
+    const x = piece.x
+    const y = piece.y
+    const pawnHasMoved = piece.moved
 
     if (player === 'white') {
         moves.push([x, y - 1])
 
-        if (!pawnHasMoved) {
+        if (!pawnHasMoved && !getPieceInPieceset(x, y - 2, pieceSet)) {
             moves.push([x, y - 2])
         }
     } else {
         moves.push([x, y + 1])
 
-        if (!pawnHasMoved) {
+        if (!pawnHasMoved && !getPieceInPieceset(x, y + 2, pieceSet)) {
             moves.push([x, y + 2])
         }
     }
@@ -24,8 +29,8 @@ export function getPawnMoves(x, y, pawnHasMoved) {
      * Check for Bounds and any Piece as Pawn can not beat straightforward
      */
     moves = moves.filter(position => !isTileOutsideBoard(position[0], position[1]));
-    moves = moves.filter(position => !isTileOccupiedByEnemy(position[0], position[1]), player);
-    moves = moves.filter(position => !isTileOccupiedByPlayer(position[0], position[1]), player);
+    moves = moves.filter(position => !isTileOccupiedByEnemy(position[0], position[1], player, pieceSet));
+    moves = moves.filter(position => !isTileOccupiedByPlayer(position[0], position[1], player, pieceSet));
 
     let attackedTiles = []
 
@@ -41,14 +46,12 @@ export function getPawnMoves(x, y, pawnHasMoved) {
         let x = position[0]
         let y = position[1]
 
-        const piece = store.getters.tiles[x][y].current
+        const piece = pieceSet.find(p => p.x === x && p.y === y)
 
-        if (piece && (piece.player !== store.getters.turn)) {
+        if (piece && (piece.player !== player)) {
             moves.push(position)
         }
     })
-
-    console.log(moves, x, y)
 
     return {
         moves: moves,
@@ -56,8 +59,9 @@ export function getPawnMoves(x, y, pawnHasMoved) {
     }
 }
 
-export function getKnightMoves(x, y) {
-    let player = store.getters.tiles[x][y].current.player
+export function getKnightMoves(piece, pieceSet) {
+    const x = piece.x
+    const y = piece.y
 
     /**
      * All Possible Knight Jumps
@@ -77,38 +81,41 @@ export function getKnightMoves(x, y) {
      * Check for Bounds and Own Pieces
      */
     moves = moves.filter(position => !isTileOutsideBoard(position[0], position[1]));
-    moves = moves.filter(position => !isTileOccupiedByPlayer(position[0], position[1], player));
+    moves = moves.filter(position => !isTileOccupiedByPlayer(position[0], position[1], piece.player, pieceSet));
 
     return moves
 }
 
 /**
- * returns all straight tiles
- * for moves, loop can be interrupted as a piece can be in the way
- * for possible pinned pieces, we need to look behind those pieces for the king and set breakLoop = true
- * @param y
- * @param x
+ * returns all straight moves for a piece in a pieceSet
+ * @param piece
+ * @param pieceSet
  * @param d
- * @param breakLoop
  * @returns {*[]}
  */
-export function getDiagonalMoves(x, y, d = 8, breakLoop = true) {
-    let player = store.getters.tiles[x][y].current.player
-    let piece;
+export function getDiagonalMoves(piece, pieceSet, d = 8) {
+    const x = piece.x
+    const y = piece.y
+    const player = piece.player
+    let tempPiece;
     let moves = [];
+
+    if (piece.id === 19) {
+        console.log(x, y)
+    }
 
     for (let i = 1; i <= d; i++) {
         if (isTileOutsideBoard(x - i, y - i)) {
             break;
         }
 
-        piece = store.getters.tiles[x - i][y - i].current
+        tempPiece = getPieceInPieceset(x - i, y - i, pieceSet);
 
-        if (piece && (piece.player === player) && breakLoop) {
+        if (tempPiece && (tempPiece.player === player)) {
             break;
         }
 
-        if (piece && breakLoop) {
+        if (tempPiece) {
             moves.push([x - i, y - i])
             break;
         }
@@ -121,13 +128,13 @@ export function getDiagonalMoves(x, y, d = 8, breakLoop = true) {
             break;
         }
 
-        piece = store.getters.tiles[x + i][y + i].current
+        tempPiece = getPieceInPieceset(x + i, y + i, pieceSet)
 
-        if (piece && (piece.player === player) && breakLoop) {
+        if (tempPiece && (tempPiece.player === player)) {
             break;
         }
 
-        if (piece && breakLoop) {
+        if (tempPiece) {
             moves.push([x + i, y + i])
             break;
         }
@@ -140,13 +147,13 @@ export function getDiagonalMoves(x, y, d = 8, breakLoop = true) {
             break;
         }
 
-        piece = store.getters.tiles[x + i][y - i].current
+        tempPiece = getPieceInPieceset(x + i, y - i, pieceSet)
 
-        if (piece && (piece.player === player) && breakLoop) {
+        if (tempPiece && (tempPiece.player === player)) {
             break;
         }
 
-        if (piece && breakLoop) {
+        if (tempPiece) {
             moves.push([x + i, y - i])
             break;
         }
@@ -159,13 +166,18 @@ export function getDiagonalMoves(x, y, d = 8, breakLoop = true) {
             break;
         }
 
-        piece = store.getters.tiles[x - i][y + i].current
+        tempPiece = getPieceInPieceset(x - i, y + i, pieceSet)
 
-        if (piece && (piece.player === player) && breakLoop) {
+        if (piece.id === 19) {
+            console.log(tempPiece)
+            console.log(tempPiece)
+        }
+
+        if (tempPiece && (tempPiece.player === player)) {
             break;
         }
 
-        if (piece && breakLoop) {
+        if (tempPiece) {
             moves.push([x - i, y + i])
             break;
         }
@@ -179,43 +191,22 @@ export function getDiagonalMoves(x, y, d = 8, breakLoop = true) {
     return moves
 }
 
-export function getKingMoves(x, y) {
-    let player = store.getters.tiles[x][y].current.player
-    let moves = getStraightMoves(x, y, 1).concat(getDiagonalMoves(x, y, 1))
-    let enemyPlayer
-
-    if (player === 'white') {
-        enemyPlayer = 'black'
-    } else {
-        enemyPlayer = 'white'
-    }
-
-    store.getters.pieces.forEach(piece => {
-        if (piece.player === enemyPlayer && piece.attackedTiles) {
-            piece.attackedTiles.forEach(p => {
-                moves = moves.filter((position) => {
-                    return !(position[0] === p[0] && position[1] === p[1])
-                })
-            })
-        }
-    })
-
-    return moves
+export function getKingMoves(piece, pieceSet) {
+    return getStraightMoves(piece, pieceSet, 1).concat(getDiagonalMoves(piece, pieceSet, 1))
 }
 
 /**
- * returns all diagonal tiles
- * for moves, loop can be interrupted as a piece can be in the way
- * for possible pinned pieces, we need to look behind those pieces for the king and set breakLoop = true
- * @param y
- * @param x
+ * returns all diagonal moves for one piece in a pieceSet
+ * @param piece
+ * @param pieceSet
  * @param d
- * @param breakLoop
  * @returns {*[]}
  */
-export function getStraightMoves(x, y, d = 8, breakLoop = true) {
-    let player = store.getters.tiles[x][y].current.player
-    let piece;
+export function getStraightMoves(piece, pieceSet, d = 8) {
+    const x = piece.x
+    const y = piece.y
+    const player = piece.player
+    let tempPiece;
     let moves = [];
 
     for (let i = 1; i <= d; i++) {
@@ -223,13 +214,13 @@ export function getStraightMoves(x, y, d = 8, breakLoop = true) {
             break;
         }
 
-        piece = store.getters.tiles[x - i][y].current
+        tempPiece = getPieceInPieceset(x - i, y, pieceSet)
 
-        if (piece && (piece.player === player) && breakLoop) {
+        if (tempPiece && (tempPiece.player === player)) {
             break;
         }
 
-        if (piece && breakLoop) {
+        if (tempPiece) {
             moves.push([x - i, y])
             break;
         }
@@ -242,13 +233,13 @@ export function getStraightMoves(x, y, d = 8, breakLoop = true) {
             break;
         }
 
-        piece = store.getters.tiles[x + i][y].current
+        tempPiece = getPieceInPieceset(x + i, y, pieceSet)
 
-        if (piece && (piece.player === player) && breakLoop) {
+        if (tempPiece && (tempPiece.player === player)) {
             break;
         }
 
-        if (piece && breakLoop) {
+        if (tempPiece) {
             moves.push([x + i, y])
             break;
         }
@@ -261,13 +252,13 @@ export function getStraightMoves(x, y, d = 8, breakLoop = true) {
             break;
         }
 
-        piece = store.getters.tiles[x][y - i].current
+        tempPiece = getPieceInPieceset(x, y - i, pieceSet)
 
-        if (piece && (piece.player === player) && breakLoop) {
+        if (tempPiece && (tempPiece.player === player)) {
             break;
         }
 
-        if (piece && breakLoop) {
+        if (tempPiece) {
             moves.push([x, y - i])
             break;
         }
@@ -280,13 +271,13 @@ export function getStraightMoves(x, y, d = 8, breakLoop = true) {
             break;
         }
 
-        piece = store.getters.tiles[x][y + i].current
+        tempPiece = getPieceInPieceset(x, y + i, pieceSet)
 
-        if (piece && (piece.player === player) && breakLoop) {
+        if (tempPiece && (tempPiece.player === player)) {
             break;
         }
 
-        if (piece && breakLoop) {
+        if (tempPiece) {
             moves.push([x, y + i])
             break;
         }

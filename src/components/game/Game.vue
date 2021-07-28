@@ -1,10 +1,10 @@
 <template>
   <div class="game">
     <Moves/>
+
     <p class="check">{{ check }}</p>
-    <div class="beatenPieces black"><Piece v-for="piece in blackBeatenPiece" :piece="piece" :key="piece.id" :tiles="tiles"></Piece></div>
+
     <Board/>
-    <div class="beatenPieces white"><Piece v-for="piece in whiteBeatenPiece" :piece="piece" :key="piece.id" :tiles="tiles"></Piece></div>
   </div>
 </template>
 
@@ -12,12 +12,10 @@
 import Board from "@/components/game/Board";
 import Moves from "@/components/game/Notation";
 import {mapGetters} from "vuex";
-import Piece from "./Piece";
 
 export default {
   name: "Game",
   components: {
-    Piece,
     Board,
     Moves
   },
@@ -27,30 +25,23 @@ export default {
   computed: {
     ...mapGetters([
       'check',
-      'beatenPieces',
-      'tiles'
-    ]),
-    blackBeatenPiece: function () {
-      console.log(this.beatenPieces);
-      return this.beatenPieces.filter(p => p.player === 'black')
-    },
-    whiteBeatenPiece: function () {
-      return this.beatenPieces.filter(p => p.player === 'white')
-    }
+      'moveHistory',
+    ])
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 .game {
-  box-sizing: border-box;
   align-items: center;
+  box-sizing: border-box;
+  display: flex;
   height: 100vh;
   width: 100vw;
 }
 
-.check {
-  position: relative;ition: fixed;
+p.check {
+  position: fixed;
   top: 50px;
   left: 50px;
 }

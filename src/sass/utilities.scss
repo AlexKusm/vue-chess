@@ -1,0 +1,32 @@
+@mixin spacing-content($margin: var(--spacing--base), $direction: vertical, $reset: false) {
+  $diff: bottom;
+
+  @if $direction == vertical {
+    $direction: top;
+  } @else if $direction == horizontal {
+    $direction: left;
+    $diff: right;
+  }
+
+  @if ($reset) {
+    > *:not(:first-child) {
+      margin: 0;
+    }
+  } @else {
+    > * {
+      margin-#{$diff}: 0;
+    }
+  }
+
+  @if $direction == top or $direction == left {
+    > *:not(:first-child) {
+      margin-#{$direction}: $margin;
+    }
+  } @else if $direction == bottom or $direction == right {
+    > *:not(:last-child) {
+      margin-#{$direction}: $margin;
+    }
+  } @else {
+    @warn 'Please define a $direction: top (vertical), left (horizontal), right or bottom';
+  }
+}

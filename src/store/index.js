@@ -1,42 +1,80 @@
 //TODO Refactor selected piece in state instead looping for it?
 import {createStore} from 'vuex'
 import {createTiles, startingPositions} from "@/store/helpers";
+import translateRanks, {getTileNotation, isKinginCheck, updatePieceMoves} from "./helpers";
 
 const store = createStore({
     state: {
-        gameID: 1,
-        turn: 'white',
-        tiles: [],
-        pieces: [],
-        moveHistory: [],
-        selectedPiece: {},
         beatenPieces: [],
-        check: false
+        check: false,
+        moveDummies: [],
+        moveHistory: [],
+        gameID: 1,
+        pieces: [],
+        selectedPiece: {},
+        tiles: [],
+        turn: 'white'
     },
     mutations: {
         CREATE_BOARD(state, tiles) {
             state.tiles = tiles;
         },
 
-        CREATE_PIECES(state, pieces) {
-            state.pieces = pieces;
+        CREATE_PIECES(state) {
+            state.pieces = startingPositions();
 
-            pieces.forEach(p => {
+            state.pieces.forEach(p => {
                 let y = p.y;
                 let x = p.x;
                 state.tiles[x][y].current = p;
             })
         },
 
-        MARK_POSSIBLE_MOVE(state, position) {
-            let x = position[0]
-            let y = position[1]
+        CREATE_MOVE_DUMMIES(state, target) {
+            let pieces = startingPositions();
 
-            state.tiles[x][y].possibleMove = true;
+            state.pieces.forEach(p => {
+                let pieceDummy = pieces.find(pd => pd.id === p.id)
+                pieceDummy.attackedTiles = p.attackedTiles
+                pieceDummy.player = p.player
+                pieceDummy.moves = p.moves
+                pieceDummy.x = p.x
+                pieceDummy.y = p.y
+                pieceDummy.moved = p.moved
+                pieceDummy.type = p.type
+            })
 
-            if (state.tiles[x][y].current) {
-                state.tiles[x][y].current.possibleBeat = true;
-            }
+            let selected = pieces.find(p => p.id === state.selectedPiece.id)
+            selected.x = target[0]
+            selected.y = target[1]
+            selected.selected = true
+
+            pieces = updatePieceMoves(pieces)
+            state.moveDummies.push(pieces)
+        },
+
+        FILTER_ILLEGAL_MOVES(state) {
+            state.moveDummies = state.moveDummies.filter(pieces => {
+                return !isKinginCheck(pieces, state.turn)
+            })
+        },
+
+        FLUSH_MOVE_DUMMIES(state) {
+            state.moveDummies = []
+        },
+
+        MARK_POSSIBLE_MOVES(state) {
+            state.moveDummies.forEach(pieces => {
+                const selected = pieces.find(p => p.selected)
+                let x = selected.x
+                let y = selected.y
+
+                state.tiles[x][y].possibleMove = true;
+
+                if (state.tiles[x][y].current) {
+                    state.tiles[x][y].current.possibleBeat = true;
+                }
+            })
         },
 
         REMOVE_TILE_HIGHLIGHTS(state) {
@@ -64,25 +102,17 @@ const store = createStore({
             })
         },
 
-        UPDATE_PIECE_MOVES(state, piece) {
-            let current = state.pieces.find(p => p.id === piece.id)
-
-            if (current) {
-                current.moves = piece.moves
-                current.attackedTiles = piece.attackedTiles
-            }
+        UPDATE_PIECE_MOVES(state) {
+            state.pieces = updatePieceMoves(state.pieces)
         },
 
         MOVE_PIECE(state, target) {
             let x = state.selectedPiece.x;
             let y = state.selectedPiece.y;
-
-            console.log('target-x:', target.x)
-            console.log('target-y:', target.y)
-
+            let beatNotation = '';
 
             /**
-             * beat current piece if present
+             * Beat current piece if present
              */
             if (target.current) {
                 const index = state.pieces.findIndex(p => p.id === target.current.id)
@@ -90,21 +120,35 @@ const store = createStore({
                 target.current.beaten = true
                 state.pieces.splice(index, 1);
                 state.beatenPieces.push(target.current)
+
+                if (state.selectedPiece.type.name === 'Pawn') {
+                    beatNotation = translateRanks(state.selectedPiece.x);
+                }
+
+                beatNotation = beatNotation + 'x'
             }
 
+            /**
+             * Set new Piece Position
+             */
             state.tiles[target.x][target.y].current = state.selectedPiece;
             state.selectedPiece.x = target.x
             state.selectedPiece.y = target.y
             state.selectedPiece.moved = true;
             state.tiles[x][y].current = null;
 
-            // const notation = state.selectedPiece.type.notation + tile.notation;
 
-            // state.moveHistory.push({
-            //     id: state.moves.length + 1,
-            //     player: state.turn,
-            //     notation: notation
-            // });
+            /**
+             * Add Move to History
+             */
+            const notation = state.selectedPiece.type.notation + beatNotation + getTileNotation(state.selectedPiece.x, state.selectedPiece.y);
+
+            state.moveHistory.push({
+                id: state.moveHistory.length + 1,
+                player: state.turn,
+                pieces: state.pieces,
+                notation: notation
+            });
         },
 
         SWITCH_TURN(state) {
@@ -116,27 +160,27 @@ const store = createStore({
         },
 
         CHECK_FOR_CHECK(state) {
-            state.check = false;
+            state.check = isKinginCheck(state.pieces, state.turn)
         }
     },
     actions: {
         newGame({commit}) {
+            console.log('NEW GAME')
             commit('CREATE_BOARD', createTiles());
-            commit('CREATE_PIECES', startingPositions);
-        },
-        removeTileHighlight({commit}) {
-            commit('REMOVE_TILE_HIGHLIGHTS');
+            commit('CREATE_PIECES');
+            commit('UPDATE_PIECE_MOVES')
         },
         selectPiece({commit}, piece) {
             commit('SELECT_PIECE', piece);
         },
-        updatePieceMoves({commit}, piece) {
-            commit('UPDATE_PIECE_MOVES', piece)
-        },
         markPossibleMoves({commit}, moves) {
             moves.forEach(position => {
-                commit('MARK_POSSIBLE_MOVE', position);
+                commit('CREATE_MOVE_DUMMIES', position)
             })
+
+            commit('FILTER_ILLEGAL_MOVES');
+            commit('MARK_POSSIBLE_MOVES');
+            commit('FLUSH_MOVE_DUMMIES')
         },
         deselectPieces({commit}) {
             commit('DESELECT_PIECE');
@@ -144,11 +188,12 @@ const store = createStore({
         },
         commitMove({commit}, tile) {
             commit('MOVE_PIECE', tile);
-            commit('CHECK_FOR_CHECK')
             // commit('CHECK_FOR_MATE')
             commit('REMOVE_TILE_HIGHLIGHTS');
             commit('DESELECT_PIECE');
             commit('SWITCH_TURN');
+            commit('UPDATE_PIECE_MOVES')
+            commit('CHECK_FOR_CHECK')
         },
         checkForCheck({commit}) {
             commit('CHECK_FOR_CHECK')
@@ -156,11 +201,11 @@ const store = createStore({
     },
     getters: {
         turn: state => state.turn,
-        moves: state => state.moves,
         beatenPieces: state => state.beatenPieces,
         selectedPiece: state => state.selectedPiece,
         pieces: state => state.pieces,
         tiles: state => state.tiles,
+        moveHistory: state => state.moveHistory,
         check: state => state.check
     }
 });
