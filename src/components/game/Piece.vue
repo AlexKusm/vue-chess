@@ -31,8 +31,8 @@ export default {
     return {
       debug: {
         attackedTiles: false,
-        moves: true,
-        id: true,
+        moves: false,
+        id: false,
         position: false,
         possibleBeat: false
       }

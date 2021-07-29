@@ -33,6 +33,10 @@ const store = createStore({
         CREATE_MOVE_DUMMIES(state, target) {
             let pieces = startingPositions();
 
+            pieces = pieces.filter(piece => {
+                return !state.beatenPieces.find(beaten => beaten.id === piece.id)
+            })
+
             state.pieces.forEach(p => {
                 let pieceDummy = pieces.find(pd => pd.id === p.id)
                 pieceDummy.attackedTiles = p.attackedTiles
@@ -41,7 +45,6 @@ const store = createStore({
                 pieceDummy.x = p.x
                 pieceDummy.y = p.y
                 pieceDummy.moved = p.moved
-                pieceDummy.type = p.type
             })
 
             const pieceToBeat = getPieceInPieceset(target[0], target[1], pieces)
@@ -175,7 +178,6 @@ const store = createStore({
     },
     actions: {
         newGame({commit}) {
-            console.log('NEW GAME')
             commit('CREATE_BOARD', createTiles());
             commit('CREATE_PIECES');
             commit('UPDATE_PIECE_MOVES')

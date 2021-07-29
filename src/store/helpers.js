@@ -78,7 +78,6 @@ export function startingPositions() {
         {
             id: 1,
             type: Rook,
-            position: [7, translateRanks('a')],
             x: translateRanks('a'),
             y: 7,
             player: 'white',
@@ -87,7 +86,6 @@ export function startingPositions() {
         }, {
             id: 2,
             type: Knight,
-            position: [7, translateRanks('b')],
             x: translateRanks('b'),
             y: 7,
             player: 'white',
@@ -96,7 +94,6 @@ export function startingPositions() {
         }, {
             id: 3,
             type: Bishop,
-            position: [7, translateRanks('c')],
             x: translateRanks('c'),
             y: 7,
             player: 'white',
@@ -105,7 +102,6 @@ export function startingPositions() {
         }, {
             id: 4,
             type: King,
-            position: [7, translateRanks('d')],
             x: translateRanks('d'),
             y: 7,
             player: 'white',
@@ -114,7 +110,6 @@ export function startingPositions() {
         }, {
             id: 5,
             type: Queen,
-            position: [7, translateRanks('e')],
             x: translateRanks('e'),
             y: 7,
             player: 'white',
@@ -123,7 +118,6 @@ export function startingPositions() {
         }, {
             id: 6,
             type: Bishop,
-            position: [7, translateRanks('f')],
             x: translateRanks('f'),
             y: 7,
             player: 'white',
@@ -132,7 +126,6 @@ export function startingPositions() {
         }, {
             id: 7,
             type: Knight,
-            position: [7, translateRanks('g')],
             x: translateRanks('g'),
             y: 7,
             player: 'white',
@@ -141,7 +134,6 @@ export function startingPositions() {
         }, {
             id: 8,
             type: Rook,
-            position: [7, translateRanks('h')],
             x: translateRanks('h'),
             y: 7,
             player: 'white',
@@ -150,7 +142,6 @@ export function startingPositions() {
         }, {
             id: 9,
             type: Pawn,
-            position: [6, translateRanks('a')],
             x: translateRanks('a'),
             y: 6,
             player: 'white',
@@ -159,7 +150,6 @@ export function startingPositions() {
         }, {
             id: 10,
             type: Pawn,
-            position: [6, translateRanks('b')],
             x: translateRanks('b'),
             y: 6,
             player: 'white',
@@ -168,7 +158,6 @@ export function startingPositions() {
         }, {
             id: 11,
             type: Pawn,
-            position: [6, translateRanks('c')],
             x: translateRanks('c'),
             y: 6,
             player: 'white',
@@ -177,7 +166,6 @@ export function startingPositions() {
         }, {
             id: 12,
             type: Pawn,
-            position: [6, translateRanks('d')],
             x: translateRanks('d'),
             y: 6,
             player: 'white',
@@ -186,7 +174,6 @@ export function startingPositions() {
         }, {
             id: 13,
             type: Pawn,
-            position: [6, translateRanks('e')],
             x: translateRanks('e'),
             y: 6,
             player: 'white',
@@ -195,7 +182,6 @@ export function startingPositions() {
         }, {
             id: 14,
             type: Pawn,
-            position: [6, translateRanks('f')],
             x: translateRanks('f'),
             y: 6,
             player: 'white',
@@ -204,7 +190,6 @@ export function startingPositions() {
         }, {
             id: 15,
             type: Pawn,
-            position: [6, translateRanks('g')],
             x: translateRanks('g'),
             y: 6,
             player: 'white',
@@ -213,7 +198,6 @@ export function startingPositions() {
         }, {
             id: 16,
             type: Pawn,
-            position: [6, translateRanks('h')],
             x: translateRanks('h'),
             y: 6,
             player: 'white',
@@ -222,7 +206,6 @@ export function startingPositions() {
         }, {
             id: 25,
             type: Pawn,
-            position: [1, translateRanks('a')],
             x: translateRanks('a'),
             y: 1,
             player: 'black',
@@ -231,7 +214,6 @@ export function startingPositions() {
         }, {
             id: 26,
             type: Pawn,
-            position: [1, translateRanks('b')],
             x: translateRanks('b'),
             y: 1,
             player: 'black',
@@ -240,7 +222,6 @@ export function startingPositions() {
         }, {
             id: 27,
             type: Pawn,
-            position: [1, translateRanks('c')],
             x: translateRanks('c'),
             y: 1,
             player: 'black',
@@ -249,7 +230,6 @@ export function startingPositions() {
         }, {
             id: 28,
             type: Pawn,
-            position: [1, translateRanks('d')],
             x: translateRanks('d'),
             y: 1,
             player: 'black',
@@ -258,7 +238,6 @@ export function startingPositions() {
         }, {
             id: 29,
             type: Pawn,
-            position: [1, translateRanks('e')],
             x: translateRanks('e'),
             y: 1,
             player: 'black',
@@ -267,7 +246,6 @@ export function startingPositions() {
         }, {
             id: 30,
             type: Pawn,
-            position: [1, translateRanks('f')],
             x: translateRanks('f'),
             y: 1,
             player: 'black',
@@ -276,7 +254,6 @@ export function startingPositions() {
         }, {
             id: 31,
             type: Pawn,
-            position: [1, translateRanks('g')],
             x: translateRanks('g'),
             y: 1,
             player: 'black',
@@ -285,7 +262,6 @@ export function startingPositions() {
         }, {
             id: 32,
             type: Pawn,
-            position: [1, translateRanks('h')],
             x: translateRanks('h'),
             y: 1,
             player: 'black',
@@ -294,7 +270,6 @@ export function startingPositions() {
         }, {
             id: 17,
             type: Rook,
-            position: [0, translateRanks('a')],
             x: translateRanks('a'),
             y: 0,
             player: 'black',
@@ -303,7 +278,6 @@ export function startingPositions() {
         }, {
             id: 18,
             type: Knight,
-            position: [0, translateRanks('b')],
             x: translateRanks('b'),
             y: 0,
             player: 'black',
@@ -312,7 +286,6 @@ export function startingPositions() {
         }, {
             id: 19,
             type: Bishop,
-            position: [0, translateRanks('c')],
             x: translateRanks('c'),
             y: 0,
             player: 'black',
@@ -321,7 +294,6 @@ export function startingPositions() {
         }, {
             id: 20,
             type: King,
-            position: [0, translateRanks('d')],
             x: translateRanks('d'),
             y: 0,
             player: 'black',
@@ -330,7 +302,6 @@ export function startingPositions() {
         }, {
             id: 21,
             type: Queen,
-            position: [0, translateRanks('e')],
             x: translateRanks('e'),
             y: 0,
             player: 'black',
@@ -339,7 +310,6 @@ export function startingPositions() {
         }, {
             id: 22,
             type: Bishop,
-            position: [0, translateRanks('f')],
             x: translateRanks('f'),
             y: 0,
             player: 'black',
@@ -348,7 +318,6 @@ export function startingPositions() {
         }, {
             id: 23,
             type: Knight,
-            position: [0, translateRanks('g')],
             x: translateRanks('g'),
             y: 0,
             player: 'black',
@@ -357,7 +326,6 @@ export function startingPositions() {
         }, {
             id: 24,
             type: Rook,
-            position: [0, translateRanks('h')],
             x: translateRanks('h'),
             y: 0,
             player: 'black',
