@@ -100,10 +100,6 @@ export function getDiagonalMoves(piece, pieceSet, d = 8) {
     let tempPiece;
     let moves = [];
 
-    if (piece.id === 19) {
-        console.log(x, y)
-    }
-
     for (let i = 1; i <= d; i++) {
         if (isTileOutsideBoard(x - i, y - i)) {
             break;
@@ -167,11 +163,6 @@ export function getDiagonalMoves(piece, pieceSet, d = 8) {
         }
 
         tempPiece = getPieceInPieceset(x - i, y + i, pieceSet)
-
-        if (piece.id === 19) {
-            console.log(tempPiece)
-            console.log(tempPiece)
-        }
 
         if (tempPiece && (tempPiece.player === player)) {
             break;

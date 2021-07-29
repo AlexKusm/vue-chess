@@ -1,7 +1,7 @@
 //TODO Refactor selected piece in state instead looping for it?
 import {createStore} from 'vuex'
 import {createTiles, startingPositions} from "@/store/helpers";
-import translateRanks, {getTileNotation, isKinginCheck, updatePieceMoves} from "./helpers";
+import translateRanks, {getPieceInPieceset, getTileNotation, isKinginCheck, updatePieceMoves} from "./helpers";
 
 const store = createStore({
     state: {
@@ -44,10 +44,20 @@ const store = createStore({
                 pieceDummy.type = p.type
             })
 
+            const pieceToBeat = getPieceInPieceset(target[0], target[1], pieces)
+
+            if (pieceToBeat) {
+                const index = pieces.findIndex(p => p.id === pieceToBeat.id)
+
+                pieceToBeat.beaten = true
+                pieces.splice(index, 1);
+            }
+
+
             let selected = pieces.find(p => p.id === state.selectedPiece.id)
+            selected.selected = true
             selected.x = target[0]
             selected.y = target[1]
-            selected.selected = true
 
             pieces = updatePieceMoves(pieces)
             state.moveDummies.push(pieces)
