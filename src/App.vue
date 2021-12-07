@@ -28,7 +28,7 @@ body {
 }
 
 #app {
-  background: radial-gradient(#ddd 0%, #abb 100%);
+  background: radial-gradient(#666 0%, #444 100%);
   height: 100vh;
 }
 </style>

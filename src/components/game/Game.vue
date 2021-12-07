@@ -1,16 +1,15 @@
 <template>
-  <div class="game">
+  <div class="game" :class="this.turn">
     <Moves/>
-
-    <p class="check">{{ check }}</p>
-
     <Board/>
+<!--    <PieceModal/>-->
   </div>
 </template>
 
 <script>
 import Board from "@/components/game/Board";
 import Moves from "@/components/game/Notation";
+// import PieceModal from "@/components/game/PieceModal";
 import {mapGetters} from "vuex";
 
 export default {
@@ -25,6 +24,7 @@ export default {
   computed: {
     ...mapGetters([
       'check',
+      'turn',
       'moveHistory',
     ])
   }

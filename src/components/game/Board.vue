@@ -1,5 +1,5 @@
 <template>
-  <div class="board" :class="[this.turn, {'check': this.check}]">
+  <div class="board" :class="[{'check': this.check, 'mate': this.mate}]">
     <div class="file" v-for="(column, i) in tiles" :key="'column-'+ i">
       <Tile :tile="tile" v-for="tile in column" :key="'tile-' + tile.id" ref="tiles"/>
     </div>
@@ -36,6 +36,7 @@ export default {
     ...mapGetters([
       'turn',
       'tiles',
+      'mate',
       'check',
       'pieces',
       'beatenPieces'
@@ -67,9 +68,10 @@ export default {
   flex: 1 0 auto;
   grid-template-columns: repeat(8, 1fr);
   margin: auto;
-  max-width: 900px;
-  max-height: 900px;
+  max-width: 75vh;
+  max-height: 75vh;
   width: 100%;
+  opacity: 1;
   transition: border-color 400ms ease, outline 400ms ease;
   position: relative;
 
@@ -86,18 +88,23 @@ export default {
     z-index: 2;
   }
 
-  &.white {
+  .white & {
     border: 10px solid #ddd;
     outline: 2px solid white;
   }
 
-  &.black {
+  .black & {
     border: 10px solid #555;
     outline: 2px solid black;
   }
 
   &.check {
     outline: 2px solid yellow;
+  }
+
+  &.mate {
+    border: 10px solid var(--highlightBeat);
+    outline: 2px solid var(--highlightBeat);
   }
 }
 

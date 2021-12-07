@@ -4,8 +4,6 @@
        :data-file="[tile.x]"
        :data-rank="[tile.y]"
        @click="tile.possibleMove === true ? commitMove(tile) : deselect()">
-    <div>{{ tile.x }}, {{tile.y}}</div>
-    <div>{{ tile.notation }}</div>
   </div>
 </template>
 

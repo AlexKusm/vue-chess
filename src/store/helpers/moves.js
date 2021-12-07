@@ -2,7 +2,7 @@ import {
     isTileOccupiedByPlayer,
     isTileOccupiedByEnemy,
     isTileOutsideBoard, getPieceInPieceset
-} from "./helpers";
+} from "./functions";
 
 export function getPawnMoves(piece, pieceSet) {
     let moves = []

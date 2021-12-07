@@ -43,7 +43,7 @@ export default {
 
     ]),
     startTurn() {
-      if (this.piece.player !== this.$store.getters.turn) {
+      if (this.piece.player !== this.$store.getters.turn || this.piece.id === 0) {
         return
       }
 
@@ -62,7 +62,7 @@ export default {
       'tiles'
     ]),
     iconPath: function () {
-      return require('../../assets/pieces/default/' + this.piece.player + this.piece.type.name + '.svg');
+      return require('../../assets/pieces/second/' + this.piece.player + this.piece.type.name + '.svg');
     },
     id: function () {
       return this.piece.id;
@@ -102,27 +102,29 @@ export default {
   background: transparentize(#ffff00, 0.7);
 }
 
-.piece:not(.beaten) {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  font-size: 5rem;
-  justify-content: center;
-  position: absolute;
-  height: calc(100% / 8);
-  left: 0;
-  top: 0;
-  transition: transform 70ms linear;
-  transform: translateX(var(--x, 0)) translateY(var(--y, 0));
-  width: calc(100% / 8);
+.board {
+  .piece:not(.beaten) {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    font-size: 5rem;
+    justify-content: center;
+    position: absolute;
+    height: calc(100% / 8);
+    left: 0;
+    top: 0;
+    transition: transform 70ms linear;
+    transform: translateX(var(--x, 0)) translateY(var(--y, 0));
+    width: calc(100% / 8);
 
-  @for $i from 0 through 7 {
-    &.file-#{$i} {
-      --y: calc(100% * #{$i});
-    }
+    @for $i from 0 through 7 {
+      &.file-#{$i} {
+        --y: calc(100% * #{$i});
+      }
 
-    &.rank-#{$i} {
-      --x: calc(100% * (#{$i}));
+      &.rank-#{$i} {
+        --x: calc(100% * (#{$i}));
+      }
     }
   }
 }

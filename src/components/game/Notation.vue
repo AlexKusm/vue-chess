@@ -26,7 +26,7 @@ export default {
     @include spacing-content($direction: horizontal, $margin: var(--spacing--small));
 
     align-items: center;
-    background: white;
+    background: linear-gradient(to right, #ddd 0%, #bbb 100%);
     display: flex;
     position: fixed;
     list-style: none;

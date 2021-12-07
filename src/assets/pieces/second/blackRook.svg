@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="37" height="41" viewBox="0 0 37 41">
+  <g fill="none" fill-rule="evenodd">
+    <polygon fill="#222" stroke="#222" stroke-linejoin="round" stroke-width="1.5" points="1 39.889 36 39.889 36 36 1 36"/>
+    <polygon fill="#222" stroke="#222" stroke-linejoin="round" stroke-width="1.5" points="5.537 30.815 7.481 27.574 29.519 27.574 31.463 30.815"/>
+    <polygon fill="#222" stroke="#222" stroke-linejoin="round" stroke-width="1.5" points="4.889 36 4.889 30.815 32.111 30.815 32.111 36"/>
+    <polygon fill="#222" stroke="#222" stroke-width="1.5" points="7.481 27.574 7.481 10.722 29.519 10.722 29.519 27.574"/>
+    <polygon fill="#222" stroke="#222" stroke-linejoin="round" stroke-width="1.5" points="7.481 10.722 3.593 7.481 33.407 7.481 29.519 10.722"/>
+    <polygon fill="#222" stroke="#222" stroke-linejoin="round" stroke-width="1.5" points="3.593 7.481 3.593 1 8.778 1 8.778 3.593 15.259 3.593 15.259 1 21.741 1 21.741 3.593 28.222 3.593 28.222 1 33.407 1 33.407 7.481"/>
+    <polyline stroke="#FFF" stroke-linecap="round" points="4.889 35.352 32.111 35.352 32.111 35.352"/>
+    <line x1="6.185" x2="30.815" y1="30.167" y2="30.167" stroke="#FFF" stroke-linecap="round"/>
+    <line x1="7.481" x2="29.519" y1="27.574" y2="27.574" stroke="#FFF" stroke-linecap="round"/>
+    <line x1="7.481" x2="29.519" y1="10.722" y2="10.722" stroke="#FFF" stroke-linecap="round"/>
+    <line x1="3.593" x2="33.407" y1="7.481" y2="7.481" stroke="#FFF" stroke-linecap="round"/>
+  </g>
+</svg>

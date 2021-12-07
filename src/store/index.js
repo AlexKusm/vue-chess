@@ -1,12 +1,20 @@
 //TODO Refactor selected piece in state instead looping for it?
 import {createStore} from 'vuex'
-import {createTiles, startingPositions} from "@/store/helpers";
-import translateRanks, {getPieceInPieceset, getTileNotation, isKinginCheck, updatePieceMoves} from "./helpers";
+import translateRanks from "./helpers/helpers";
+import {createTiles, startingPositions} from "./helpers/helpers";
+import {
+    getPieceInPieceset,
+    getTileNotation,
+    isKinginCheck,
+    updatePieceMoves
+} from "./helpers/functions";
 
 const store = createStore({
     state: {
         beatenPieces: [],
         check: false,
+        mate: false,
+        stalemate: false,
         moveDummies: [],
         moveHistory: [],
         gameID: 1,
@@ -32,6 +40,11 @@ const store = createStore({
 
         CREATE_MOVE_DUMMIES(state, target) {
             let pieces = startingPositions();
+            let index;
+
+            if (target.length < 1) {
+                return
+            }
 
             pieces = pieces.filter(piece => {
                 return !state.beatenPieces.find(beaten => beaten.id === piece.id)
@@ -39,9 +52,8 @@ const store = createStore({
 
             state.pieces.forEach(p => {
                 let pieceDummy = pieces.find(pd => pd.id === p.id)
-                pieceDummy.attackedTiles = p.attackedTiles
-                pieceDummy.player = p.player
                 pieceDummy.moves = p.moves
+                pieceDummy.attackedTiles = p.attackedTiles
                 pieceDummy.x = p.x
                 pieceDummy.y = p.y
                 pieceDummy.moved = p.moved
@@ -50,10 +62,8 @@ const store = createStore({
             const pieceToBeat = getPieceInPieceset(target[0], target[1], pieces)
 
             if (pieceToBeat) {
-                const index = pieces.findIndex(p => p.id === pieceToBeat.id)
-
+                index = pieces.findIndex(p => p.id === pieceToBeat.id)
                 pieceToBeat.beaten = true
-                pieces.splice(index, 1);
             }
 
 
@@ -62,7 +72,9 @@ const store = createStore({
             selected.x = target[0]
             selected.y = target[1]
 
+            pieces.splice(index, 1);
             pieces = updatePieceMoves(pieces)
+
             state.moveDummies.push(pieces)
         },
 
@@ -174,6 +186,16 @@ const store = createStore({
 
         CHECK_FOR_CHECK(state) {
             state.check = isKinginCheck(state.pieces, state.turn)
+        },
+
+        CHECK_FOR_MATE(state) {
+            if (state.check && state.moveDummies.length < 1) {
+                state.mate = true
+            }
+
+            if (!state.check && state.moveDummies.length < 1) {
+                state.stalemate = true
+            }
         }
     },
     actions: {
@@ -198,17 +220,29 @@ const store = createStore({
             commit('DESELECT_PIECE');
             commit('REMOVE_TILE_HIGHLIGHTS');
         },
-        commitMove({commit}, tile) {
+        commitMove({commit, dispatch}, tile) {
             commit('MOVE_PIECE', tile);
-            // commit('CHECK_FOR_MATE')
             commit('REMOVE_TILE_HIGHLIGHTS');
-            commit('DESELECT_PIECE');
             commit('SWITCH_TURN');
             commit('UPDATE_PIECE_MOVES')
             commit('CHECK_FOR_CHECK')
+            dispatch('checkForMate')
+            commit('DESELECT_PIECE');
         },
-        checkForCheck({commit}) {
-            commit('CHECK_FOR_CHECK')
+        checkForMate({commit}) {
+            let playerPieces = store.getters.pieces.filter(piece => piece.player === store.getters.turn)
+
+            playerPieces.forEach(piece => {
+                commit('SELECT_PIECE', piece)
+
+                piece.moves.forEach(move => {
+                    commit('CREATE_MOVE_DUMMIES', move)
+                })
+            })
+
+            commit('FILTER_ILLEGAL_MOVES');
+            commit('CHECK_FOR_MATE');
+            commit('FLUSH_MOVE_DUMMIES')
         }
     },
     getters: {
@@ -218,7 +252,8 @@ const store = createStore({
         pieces: state => state.pieces,
         tiles: state => state.tiles,
         moveHistory: state => state.moveHistory,
-        check: state => state.check
+        check: state => state.check,
+        mate: state => state.mate
     }
 });
 
